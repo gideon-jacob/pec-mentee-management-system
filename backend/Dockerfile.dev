@@ -1,0 +1,28 @@
+FROM openjdk:17-jdk-slim
+
+# Install Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy Maven files first for better caching
+COPY pom.xml ./
+COPY .mvn .mvn/
+COPY mvnw ./
+COPY mvnw.cmd ./
+
+# Make mvnw executable
+RUN chmod +x mvnw
+
+# Download dependencies (this layer will be cached if pom.xml doesn't change)
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src/
+
+EXPOSE 8080
+
+CMD ["mvn", "spring-boot:run"]
