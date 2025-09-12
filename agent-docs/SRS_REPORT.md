@@ -54,7 +54,7 @@ The key functions of the Student Mentoring Application are:
 | Parent/Guardian | Can view their child's profile and academic data (read-only access). | Basic |
 
 #### 2.4 Operating Environment
-The application will be a web-based platform accessible through modern web browsers (e.g., Chrome, Firefox, Safari, Edge) on desktops, tablets, and mobile devices. The backend will be hosted on a secure cloud server to ensure high availability and data backup.
+The application will be a web-based platform accessible through modern web browsers (e.g., Chrome, Firefox, Safari, Edge) on desktops, tablets, and mobile devices. The backend will be hosted on an AWS EC2 instance, since this is a Spring Boot application, to ensure high availability and data backup.
 
 #### 2.5 Design and Implementation Constraints
 - The application must be responsive and provide a seamless user experience across different devices.
