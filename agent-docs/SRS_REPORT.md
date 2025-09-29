@@ -1,10 +1,15 @@
 # Software Requirements Specification
-## Student Mentoring Application
-### 1. Introduction
-#### 1.1 Purpose
-The purpose of this document is to provide a detailed description of the requirements for the Student Mentoring Application. This application is designed to digitize the existing paper-based student mentoring booklet, creating a centralized and efficient system for tracking and managing student mentorship, academic performance, and personal development throughout their time at the institution.
 
-#### 1.2 Intended Audience
+## Student Mentoring Application
+
+### 1. Introduction
+
+### 1.1 Purpose
+
+The purpose of this document is to provide a detailed description of the requirements for the **Student Mentoring Application**. This application is designed to digitize the existing paper-based student mentoring booklet, creating a centralized and efficient system for tracking and managing student mentorship, academic performance, and personal development throughout their time at the institution.
+
+### 1.2 Intended Audience
+
 This document is intended for all stakeholders involved in the development and implementation of the application, including:
 
 - Project Managers
@@ -14,169 +19,350 @@ This document is intended for all stakeholders involved in the development and i
 - College Administration (HODs, Principal)
 - Faculty Members (Mentors, Class Coordinators)
 
-#### 1.3 Overall Description
+### 1.3 Overall Description
+
 The Student Mentoring Application will be a web-based platform that allows for the easy entry, storage, and retrieval of student data currently captured in the physical mentoring booklet. It will provide different levels of access for various user roles, ensuring data privacy and integrity. The system aims to improve the efficiency of the mentoring process, provide better insights into student performance through analytics, and enhance communication between mentors, students, and parents.
 
-#### 1.4 Scope
+### 1.4 Scope
+
 The scope of this project is to develop a comprehensive application that covers all aspects of the mentoring booklet. This includes:
 
-- Student personal and family data management.
-- Academic history and semester-wise performance tracking.
-- Logging and tracking of mentoring sessions.
-- Recording of co-curricular and extra-curricular activities.
-- Generation of reports for analysis and review.
+- **One-Time Data Entry:** Student personal, family, and general academic profile information.
+- **Per-Semester Data Entry:** Academic performance, mentoring sessions, and activity charts for each semester.
+- **End-of-Program Data:** Placement details and final student status.
+- Reporting and data analysis features.
 
 The initial phase will focus on replicating the functionality of the booklet, with future phases potentially including features like automated notifications, advanced analytics dashboards, and integration with other college systems.
 
 ### 2. Overall Description
-#### 2.1 Product Perspective
+
+### 2.1 Product Perspective
+
 This application will be a standalone system, but it is designed with the potential for future integration with the college's existing Student Information System (SIS). It will replace the manual, paper-based process, reducing paperwork and the risk of data loss.
 
-#### 2.2 Product Functions
+### 2.2 Product Functions
+
 The key functions of the Student Mentoring Application are:
 
 - **User Authentication and Authorization:** Secure login for different user roles.
-- **Student Profile Management:** Create, view, update, and delete student profiles.
+- **Student Profile Management:** Create, view, and update student profiles. This is divided into a one-time general profile and recurring semester-based profiles.
 - **Mentor-Mentee Management:** Allow administrators to assign students to specific mentors.
 - **Academic Tracking:** Input and monitor semester-wise results, attendance, and arrears.
-- **Mentoring Session Logging**: Record details and ratings of each mentoring session.
-- **Data Entry:** Forms for inputting all information from the physical booklet.
+- **Mentoring Session Logging:** Record details and ratings of each mentoring session on a per-semester basis.
 - **Reporting:** Generate comprehensive reports on student progress and mentor activities.
-- **Search and Filter:** Easily find specific students or groups of students based on various criteria.
+- **Offline Access:** Provide core functionality when the user's device is offline.
 
-#### 2.3 User Classes and Characteristics
-| User Role | Responsibilities & Permissions | Technical Expertise |
-|---|---|---|
-| Administrator | Manages user accounts, system settings, and has full access to all data. Can assign students to mentors and generate institution-level reports. | High |
-| Head of Department (HOD) | Can view all student data within their department. Can view mentor activities and generate departmental reports. | Medium |
-| Mentor / Faculty | Can view a list of their assigned mentees. Can view and update data for their assigned mentees. Can log mentoring sessions and input academic data. | Basic |
-| Student | Can view their own profile and academic data (read-only access). | Basic |
-| Parent/Guardian | Can view their child's profile and academic data (read-only access). | Basic |
+### 2.3 User Classes and Characteristics
 
-#### 2.4 Operating Environment
-The application will be a web-based platform accessible through modern web browsers (e.g., Chrome, Firefox, Safari, Edge) on desktops, tablets, and mobile devices. The backend will be hosted on an AWS EC2 instance, since this is a Spring Boot application, to ensure high availability and data backup.
+| **User Role** | **Responsibilities & Permissions** | **Technical Expertise** |
+| --- | --- | --- |
+| **Administrator** | Manages user accounts, system settings, and has full access to all data. Can assign students to mentors and generate institution-level reports. | High |
+| **Head of Department (HOD)** | Can view all student data within their department. Can view mentor activities and generate departmental reports. | Medium |
+| **Mentor / Faculty** | Can view a list of their assigned mentees. Can view and update data for their assigned mentees. Can log mentoring sessions and input academic data. | Basic |
+| **Student** | Can view their own profile and academic data (read-only access). | Basic |
+| **Parent/Guardian** | Can view their child's profile and academic data (read-only access). | Basic |
 
-#### 2.5 Design and Implementation Constraints
+### 2.4 Operating Environment
+
+The application will be a web-based platform accessible through modern web browsers (e.g., Chrome, Firefox, Safari, Edge). The technology stack is as follows:
+
+- **Frontend:** **React.js Progressive Web App (PWA)** with Zod for form validation. Styling will be implemented using **Tailwind CSS** and the **Shadcn/ui** component library.
+- **Backend:** Spring Boot (Java).
+- **Database:** Supabase with PostgreSQL for database hosting and management.
+- **Hosting:** The frontend will be hosted on **AWS S3** and distributed via **AWS CloudFront**. The backend application will be hosted on an **AWS EC2** instance.
+
+### 2.5 Design and Implementation Constraints
+
 - The application must be responsive and provide a seamless user experience across different devices.
 - The system must adhere to data privacy regulations to protect sensitive student information.
 - The user interface should be intuitive and require minimal training for faculty and staff.
-- The database schema must be scalable to accommodate a growing number of students and data over the years.
+- The application must support offline functionality. Data entered offline must be synchronized with the server once a network connection is re-established.
 
 ### 3. System Features
-#### 3.1 User Management (Functional Requirement)
-- **3.1.1:** The system shall allow administrators to create, edit, and deactivate user accounts for all roles.
-- **3.1.2:** The system shall require users to log in with a unique username and password.
-- **3.1.3:** The system shall implement role-based access control to restrict access to features and data based on the user's role.
 
-#### 3.2 Student Profile Management (Functional Requirement)
-- **3.2.1:** The system shall allow authorized users (Admin, HOD, Mentor) to create an initial student profile containing only the student's name and register number.
-- **3.2.2:** The system shall require the student to log in to their account to complete their profile by filling in all personal, family, and educational history details as specified in the mentoring booklet.
-- **3.2.3:** The system shall allow for the uploading of photos for the student, father, and mother.
-- **3.2.4:** The system shall allow authorized users to update student information as needed.
+### 3.1 User and Profile Management
 
-#### 3.3 Academic Performance Tracking (Functional Requirement)
-- **3.3.1:** The system shall provide an interface to enter semester-wise subject details, including marks for internal assessments and final exams.
-- **3.3.2:** The system shall automatically calculate GPA and CGPA based on the entered marks and credits.
-- **3.3.3:** The system shall maintain a record of attendance, arrears, and any scholarships received.
-- **3.3.4:** The system shall allow for the tracking of mini-projects and placement details for each student.
+- **3.1.1 User Accounts:**
+    - The system shall allow administrators to create, edit, and deactivate user accounts for non-student roles (e.g., HOD, Mentor).
+    - When an initial student profile is created, the system shall automatically generate a corresponding student user account with the register number as the username and a secure, temporary password.
+    - The system shall require students to change their temporary password upon first login.
+- **3.1.2 Student Onboarding (Corresponds to PDF Pages 1-3):**
+    - The system shall allow authorized users (Admin, HOD, Mentor) to create an initial student profile with only the name and register number.
+    - The system shall require the student to log in to complete their core profile, including personal data, parent details, sibling details, and past educational history (10th/12th).
+    - The system shall allow for the uploading of photos for the student, father, and mother.
+- **3.1.3 Student General Profile (Corresponds to PDF Page 4):**
+    - After onboarding, the system shall allow the student or mentor to fill out the general profile section, which includes long-term ambition, career options, SWOT analysis, and living style. This data is intended to be filled out once at the start of the academic program.
 
-#### 3.4 Mentoring Session Logging (Functional Requirement)
-- **3.4.1:** The system shall allow mentors to log details of each mentoring session, including the date and topics discussed.
-- **3.4.2:** The system shall include the 10-point rating scale for mentors to evaluate students on various parameters (character, studies, etc.).
-- **3.4.3:** The system shall store a historical log of all mentoring sessions for each student.
+### 3.2 Per-Semester Activities
 
-#### 3.5 Mentoring Chart Logging (Functional Requirement)
-- **3.5.1:** The system shall provide an interface for mentors to fill out the detailed Mentoring Chart for each student, based on inputs from both the student and relevant faculty.
-- **3.5.2 Time Management:** The system shall allow the mentor to record the number of hours a student spends per week on various activities (e.g., Subject Reading, Browsing, Sports).
-- **3.5.3 Class Routine:**
-  - The system shall allow subject-handling faculty to provide a 1-5 rating for each student on: Attendance, Attentiveness, Taking Notes, Interaction, and Task Completion for both classroom and laboratory sessions.
-  - These ratings shall be viewable by the student's mentor.
-- **3.5.4 Examinations:**
-  - The system shall allow mentors to record a 1-5 rating for a student's approach to monthly tests (e.g., Seriousness, Preparations, Material Collection).
-  - The system shall allow mentors to record student inputs on their preparation for University Exams (e.g., using Question Banks, Group Study).
-- **3.5.5 Other Activities:** The system shall provide a section to log student participation in Mini Projects, Presentations, Workshops, and Cultural/Sports events.
+- **3.2.1 Semester Mentoring Activity (Corresponds to PDF Page 5):**
+    - For each semester, the system shall allow the mentor to create a new "Semester Mentoring Activity" record.
+    - This record shall capture details such as the student's field of interest, favorite/hardest subjects, library usage, and communication skills for that specific semester.
+- **3.2.2 Mentoring Chart Logging (Corresponds to PDF Page 6):**
+    - For each semester, the system shall provide an interface for mentors to fill out the detailed Mentoring Chart, capturing time management, faculty ratings on class routines, and the student's approach to examinations.
+- **3.2.3 Academic Performance Tracking (Corresponds to PDF Page 7):**
+    - For each semester, the system shall allow mentors to record subject-wise performance, including marks from a dynamic number of internal assessments and final exams.
+    - The system shall track attendance percentage and the number of arrears for the semester.
+- **3.2.4 Mentoring Session Logging (Corresponds to PDF Page 7):**
+    - Throughout each semester, the system shall allow mentors to log multiple individual mentoring sessions, including the date and the 10-point rating scale evaluation.
+- **3.2.5 Semester Review (Corresponds to PDF Page 8):**
+    - At the end of each semester, the system shall allow the mentor to provide an overall review, summarizing the student's strengths, weaknesses, and any disciplinary issues for that semester.
 
-#### 3.6 Mentor-Mentee Management (Functional Requirement)
-- **3.6.1:** The system shall allow administrators to assign one or more students to a specific mentor.
-- **3.6.2:** The system shall allow administrators to unassign students from a mentor.
-- **3.6.3:** The system shall provide an interface for mentors to view a list of all students currently assigned to them.
-- **3.6.4:** The system shall prevent a student from being assigned to more than one mentor at the same time.
+### 3.3 End-of-Program Management (Corresponds to PDF Page 9)
+
+- **3.3.1 Projects & Placements:**
+    - The system shall allow for the tracking of mini-projects and final projects throughout the student's academic career.
+    - The system shall provide a dedicated section to record placement details, including company, date, and outcome.
+- **3.3.2 Final Data Summary:**
+    - The system shall provide a summary view that
+      
+        consolidates semester-wise data (CGPA, attendance, etc.) into a single report, as seen on page 9 of the PDF.
+        
+    - The system shall allow for updating the student's contact address at the time of leaving the college.
+
+### 3.4 Other Functional Requirements
+
+- **3.4.1 Mentor-Mentee Management:** The system shall allow administrators to assign and unassign students to mentors.
+- **3.4.2 Offline Functionality:** The system shall cache essential data and allow offline entry for mentoring sessions and academic data, with synchronization upon reconnection.
 
 ### 4. External Interface Requirements
-#### 4.1 User Interfaces
+
+### 4.1 User Interfaces
+
 The application will feature a clean, modern, and intuitive graphical user interface (GUI). Key UI elements will include:
 
-- A centralized dashboard for a quick overview of key metrics.
-- User-friendly forms for data entry with clear labels and validation.
-- Interactive tables for displaying lists of students and academic data, with sorting and filtering capabilities.
-- A dedicated profile page for each student, presenting all information in a well-organized manner.
+- A centralized dashboard for each user role providing a quick overview of relevant information (e.g., list of mentees for a mentor, departmental stats for an HOD).
+- User-friendly forms for data entry with clear labels, placeholders, and real-time validation to minimize errors.
+- Interactive tables for displaying lists of students and academic data, with robust sorting, filtering, and search capabilities.
+- A dedicated and comprehensive profile page for each student, presenting all information in a well-organized and easily digestible manner, separated by general and semester-specific data.
 
-#### 4.2 Software Interfaces
-- The application may need to interface with a database management system (e.g., MySQL, PostgreSQL).
-- Future versions may require an API for integration with other college software systems.
+### 4.2 Hardware Interfaces
+
+As a web-based application, the system will not interface directly with any specific hardware. It will be accessible through any standard device (desktop, laptop, tablet, smartphone) with a modern web browser.
+
+### 4.3 Software Interfaces
+
+- **Frontend-Backend Communication:** The React.js frontend will communicate with the Spring Boot backend via a RESTful API. All data exchange will happen through this API.
+- **Database:** The backend application will interface with a PostgreSQL database hosted on Supabase using the Java Database Connectivity (JDBC) API.
+- **Future Integrations:** The system is designed with the potential for future API-based integration with the college's Student Information System (SIS) for data synchronization (e.g., syncing student data from existing systems like NetKampus).
+
+### 4.4 Communications Interfaces
+
+- All communication between the client (web browser) and the servers (AWS S3/CloudFront and EC2) will be encrypted using HTTPS (HTTP over SSL/TLS) to ensure data confidentiality and integrity.
 
 ### 5. Non-Functional Requirements
-#### 5.1 Performance
-- The system should load pages within 3 seconds under normal network conditions.
-- The system should be able to handle concurrent access from at least 100 users without significant degradation in performance.
 
-#### 5.2 Security
-- All data transmission between the client and server must be encrypted using SSL/TLS.
-- Passwords must be hashed and salted before being stored in the database.
-- The system must be protected against common web vulnerabilities such as SQL injection and cross-site scripting (XSS).
+### 5.1 Performance
 
-#### 5.3 Reliability
-- The application should have an uptime of 99.5%.
-- Regular backups of the database must be performed to prevent data loss.
+- **Response Time:** All pages and API responses should load within 3 seconds under normal network conditions.
+- **Concurrency:** The system must be able to handle concurrent access from at least 100 users without significant degradation in performance.
+- **Data Processing:** Reports and data exports should be generated within 10 seconds for typical data sets.
 
-#### 5.4 Usability
-- The application should be easy to navigate for users with basic computer skills.
-- Consistent design and layout should be used throughout the application.
-- Help text and tooltips should be provided for complex fields or features.
+### 5.2 Security
 
-### 6. API Endpoints (Preliminary)
-This section outlines the preliminary RESTful API endpoints for the application.
+- **Authentication & Authorization:** The system must enforce strict role-based access control (RBAC) to ensure users can only access data and perform actions permitted by their role.
+- **Data Encryption:** All data transmission must be encrypted using SSL/TLS. Passwords must be securely hashed and salted before being stored in the database.
+- **Vulnerability Protection:** The application must be protected against common web vulnerabilities, including but not limited to SQL Injection, Cross-Site Scripting (XSS), and Cross-Site Request Forgery (CSRF).
 
-#### 6.1 Authentication
-- `POST /api/auth/login`: Authenticate a user and return a session token.
-- `POST /api/auth/logout`: Log out the current user.
+### 5.3 Reliability
 
-#### 6.2 Users (Admin only)
-- `GET /api/users`: Get a list of all users.
-- `POST /api/users`: Create a new user account.
-- `GET /api/users/{userId}`: Retrieve details for a specific user.
-- `PUT /api/users/{userId}`: Update a user's details.
-- `DELETE /api/users/{userId}`: Deactivate a user account.
+- **Availability:** The application should have a target uptime of 99.5%, excluding scheduled maintenance.
+- **Data Integrity:** The system must ensure that data is not corrupted or lost. Transactional integrity must be maintained for all database operations.
+- **Backup and Recovery:** Regular, automated backups of the database must be performed to prevent data loss, with a clear recovery plan in place.
 
-#### 6.3 Students
-- `POST /api/students`: Create an initial student profile (Admin/Mentor).
-- `GET /api/students`: Get a list of all students with filtering options (Admin/HOD/Mentor).
-- `GET /api/students/{studentId}`: Get the full profile of a specific student.
-- `PUT /api/students/{studentId}`: Allow a student to update their own profile after initial login.
-- `PATCH /api/students/{studentId}`: Allow authorized staff to update specific details of a student's profile.
-- `POST /api/students/{studentId}/photos`: Upload student or parent photos.
+### 5.4 Usability
 
-#### 6.4 Academic Performance
-- `POST /api/students/{studentId}/academics`: Add a new semester performance record for a student (Mentor/Admin).
-- `GET /api/students/{studentId}/academics`: Get all academic records for a student.
-- `PUT /api/students/{studentId}/academics/{semesterId}`: Update a specific academic record.
+- **Learnability:** The user interface should be intuitive and easy to learn for users with basic computer skills, requiring minimal training.
+- **Consistency:** A consistent design language, layout, and navigation should be used throughout the application to avoid user confusion.
+- **Error Handling:** The system shall provide clear, user-friendly error messages and guidance on how to resolve issues.
 
-#### 6.5 Mentoring
-- `GET /api/mentors/me/students`: Get the list of students assigned to the currently logged-in mentor.
-- `POST /api/students/{studentId}/mentoring-sessions`: Log a new mentoring session (Mentor).
-- `GET /api/students/{studentId}/mentoring-sessions`: Retrieve all mentoring sessions for a student.
-- `POST /api/students/{studentId}/mentoring-chart`: Create or update the mentoring chart for a semester (Mentor).
-- `GET /api/students/{studentId}/mentoring-chart`: Retrieve the mentoring chart data for a semester.
+### 5.5 Scalability
 
-#### 6.6 Assignments (Admin only)
-- `GET /api/assignments`: Get a list of all mentor-student assignments.
-- `POST /api/assignments`: Assign a student to a mentor (body: { "studentId": 1, "mentorId": 1 }).
-- `DELETE /api/assignments`: Unassign a student from a mentor (body: { "studentId": 1 }).
+- **Architectural Design:** The application architecture must be designed to handle a gradual increase in the number of students, mentors, and the volume of data stored over several academic years.
+    - **Stateless Backend:** The Spring Boot backend services shall be stateless, allowing for horizontal scaling by running multiple instances behind a load balancer.
+    - **Database Scaling:** The PostgreSQL database must be configured with efficient indexing strategies. Connection pooling will be used to manage database connections effectively.
+    - **Asynchronous Processing:** Long-running tasks, such as generating large reports, should be handled asynchronously to avoid blocking user requests.
 
-### 7. Database Schema (PostgreSQL)
-This section provides the SQL statements to create the database schema for a PostgreSQL database.
+### 5.6 Maintainability
 
-```sql
+- **Code Quality and Principles:** The source code must be well-documented, clean, and follow industry best practices and design principles to facilitate future updates and maintenance.
+    - **Backend (Spring Boot):** The code should adhere to SOLID principles and a clear separation of concerns (e.g., Controller-Service-Repository layers).
+    - **Frontend (React):** The code should follow a component-based architecture, with a clear state management strategy to handle application data.
+    - **Modularity:** The application should be designed in a modular fashion, allowing individual features to be updated or replaced with minimal impact on other parts of the system.
+    - **CI/CD:** A Continuous Integration/Continuous Deployment (CI/CD) pipeline should be established for automated testing and deployment, ensuring code quality and release stability.
+
+### 5.7 Offline Support
+
+- **Data Caching:** The PWA must cache essential application data and previously viewed student profiles on the user's device to allow for offline viewing.
+- **Data Synchronization:** Data entered or modified offline must be queued locally and synced reliably with the server once a network connection is available. The user should be notified of the sync status.
+
+### 5.8 Installability
+
+- The application must be a PWA and should prompt users to install it on their home screen on supported devices (desktop and mobile) for easy, app-like access.
+
+### 6. UI Description
+
+This section outlines the page-by-page user interface for each role. Components mentioned will be from the Shadcn/ui library.
+
+### 6.1 Common Pages
+
+- **6.1.1 Role Selection Page (Landing Page)**
+    - **Description:** The initial page a user sees, allowing them to select their role. Clicking an option will navigate the user to a dedicated login path.
+    - **Components:**
+        - `Grid` or `Flex container` holding three options.
+        - `Card` 1: Titled "Student Login". Clicking this navigates to `/login/student`.
+        - `Card` 2: Titled "Parent Login". Clicking this navigates to `/login/parent`.
+        - `Card` 3: Titled "Faculty/Admin Login". Clicking this navigates to `/login/faculty`.
+- **6.1.2 Login Page**
+    - **Description:** A centered card on the screen for user authentication. The application will have distinct routes (`/login/student`, `/login/parent`, `/login/faculty`) for each user type.
+    - **Components:**
+        - `Card`: Main container for the login form.
+        - `CardHeader`: Displays a static title corresponding to the route (e.g., "Student Login").
+        - `CardContent`: Contains the form fields.
+            - `Input` field for Username (or Register Number for students/parents).
+            - `Input` field for Password (type="password").
+        - `CardFooter`: Contains the `Button` for submitting the form ("Login").
+
+### 6.2 Administrator UI
+
+- **6.2.1 Admin Dashboard**
+    - **Description:** The main landing page after login, providing a high-level overview and navigation.
+    - **Components:**
+        - `Header`: Displays the application name and a dropdown menu with user info and a "Logout" button.
+        - `Sidebar`: Navigation links to "Dashboard", "User Management", "Student Management".
+        - `Grid` of `Card` components displaying key metrics: Total Students, Total Mentors, Total HODs.
+        - `Card` with "Quick Actions" containing buttons to "Create New User" and "Create Student Profile".
+- **6.2.2 User Management Page**
+    - **Description:** A page to manage all non-student user accounts (Administrators, HODs, and Mentors).
+    - **Components:**
+        - `Table`: Lists all users with columns for Full Name, Username, Role, Department, and Actions.
+            - `DropdownMenu` in the Actions column with options to "Edit" or "Deactivate" user.
+        - **Create/Edit User Interface (Dialog):**
+            - **Trigger:**
+                - A `Button` with the label "Create New User" will be positioned above the user table. Clicking this button will open the creation dialog.
+                - The "Edit" option within the `DropdownMenu` in the user table's "Actions" column will open the same dialog, but pre-populated with the selected user's data.
+            - **Dialog Component:**
+                - `DialogContent`: A modal window that appears overlaid on the page.
+                - `DialogHeader`:
+                    - `DialogTitle`: The title will dynamically change. It will display "Create New User" when creating, and "Edit User: [User's Name]" when editing.
+                    - `DialogDescription`: A brief instruction, e.g., "Fill in the details below to create or update a user account."
+                - **Form Fields:**
+                    - `Label` for "Full Name": Paired with an `Input` field for the user's full name.
+                    - `Label` for "Username": Paired with an `Input` field for the login username. This field will be disabled when editing a user.
+                    - `Label` for "Password": Paired with an `Input` of `type="password"`. When creating a user, this is a required field. When editing, it can be left blank if the password is not being changed. A sub-text will indicate this.
+                    - `Label` for "Role": Paired with a `Select` component (dropdown).
+                        - `SelectTrigger`: Shows the currently selected role.
+                        - `SelectContent`: Contains the options: "Administrator", "HOD", "Mentor".
+                    - `Label` for "Department": Paired with a `Select` component.
+                        - `SelectContent`: Contains a list of all available departments (e.g., "Computer Science", "Mechanical Engineering"). This field is required if the selected role is "HOD" or "Mentor".
+                - `DialogFooter`:
+                    - `Button` with "Cancel" text: Closes the dialog without saving changes.
+                    - `Button` with "Save" text: Submits the form to create or update the user.
+- **6.2.3 Student Management Page**
+    - **Description:** A page to create initial student profiles and view/manage all students, including their mentor assignments.
+    - **Components:**
+        - **Action Buttons Bar:** A container above the table holding key action buttons.
+            - `Button` ("Create Student Profile"): Opens a dialog for creating a single student.
+            - `Button` ("Bulk Edit Mentor Assignment"): This button is disabled by default and becomes active when one or more students are selected in the table below. It opens the bulk edit dialog.
+        - `Dialog` (for Create Student): A form with `Input` fields for Student Name, Register Number, a `Select` dropdown for the student's **Program** (e.g., "B.E.", "M.B.A."), and a `Select` dropdown for their Branch/Department. The **Batch** (e.g., "2023-2027") will be auto-calculated based on the current year and the selected program's duration. Upon submission, it displays the auto-generated temporary password for the student.
+        - `Table`: Lists all students with columns for:
+            - A `Checkbox` in the header for "Select All" and in each row for individual selection.
+            - Name, Register Number, Branch, Batch, Assigned Mentor, and **Actions**.
+            - Includes search and filter capabilities with pagination.
+            - **`DropdownMenu` in the Actions column (for single-student actions):**
+                - "Edit Mentor Assignment": Opens the mentor modification dialog for an individual student.
+                - "View Full Profile": Navigates to the student's detailed profile page.
+        - **Edit Mentor Assignment Interface (Dialog for single student):**
+            - **Trigger:** The "Edit Mentor Assignment" option in the student table's `DropdownMenu`.
+            - **Dialog Component:**
+                - `DialogContent`: The main container for the modal's content, which is a form.
+                - `DialogHeader`:
+                    - `DialogTitle`: "Edit Mentor for [Student Name]".
+                    - `DialogDescription`: Displays the current assignment status, e.g., "Currently assigned to: [Mentor Name]" or "This student is currently unassigned."
+                - **Form Fields:**
+                    - `Label` for "New Mentor": Paired with a `Select` component.
+                        - `SelectTrigger`: Shows the currently selected new mentor.
+                        - `SelectContent`: Contains a list of all available mentors, with a special first option "-- Unassign --" to remove the current mentor.
+                - `DialogFooter`:
+                    - `Button` "Cancel".
+                    - `Button` "Save Assignment".
+        - **Bulk Edit Mentor Assignment Interface (Dialog for multiple students):**
+            - **Trigger:** The "Bulk Edit Mentor Assignment" button.
+            - **Dialog Component:**
+                - `DialogContent`: The main container for the modal's content, which is a form.
+                - `DialogHeader`:
+                    - `DialogTitle`: "Bulk Edit Mentor Assignment".
+                    - `DialogDescription`: Displays the number of students selected, e.g., "You are about to change the mentor for [X] selected students."
+                - **Form Fields:**
+                    - `Label` for "New Mentor": Paired with a `Select` component.
+                        - `SelectTrigger`: Shows a placeholder. If the selected students all have the same mentor, it will show that mentor's name. If the selected students have different mentors, it will show a placeholder text like "-- Multiple Values --".
+                        - `SelectContent`: Contains a list of all available mentors, with a special first option "-- Unassign --" to remove the current mentor.
+                - `DialogFooter`:
+                    - `Button` "Cancel".
+                    - `Button` "Save Assignment".
+- **6.2.4 Mentor Assignment Page**
+    - **Description:** An interface to perform bulk assignment of unassigned students to a mentor.
+    - **Components:**
+        - Two-panel layout.
+        - **Left Panel:** A `Card` containing a list of all unassigned students, with checkboxes next to each name.
+        - **Right Panel:** A `Card` with a `Select` dropdown to choose a Mentor. Below it, a `Button` ("Assign Selected Students") to perform the assignment.
+
+### 6.3 Mentor UI
+
+- **6.3.1 Mentor Dashboard**
+    - **Description:** The landing page showing the list of assigned mentees.
+    - **Components:**
+        - `Header` and `Sidebar` for navigation.
+        - `Card` titled "My Mentees".
+        - `Table`: Lists all assigned mentees with columns for Name, Register Number, and Branch. Each row is clickable to navigate to the student's detailed profile. Includes a search bar.
+- **6.3.2 Student Profile Page**
+    - **Description:** The main workspace for a mentor to view and update a specific student's data.
+    - **Components:**
+        - `Header`: Displays the Student's Name and Register Number.
+        - `Tabs` component to switch between views:
+            - **`Tab 1: General Profile`**: A read-only view of the student's onboarding and general profile data (Pages 1-4), with an "Edit" button for fields the mentor can update.
+            - **`Tab 2: Semester Details`**: Contains all per-semester information.
+                - `Select` dropdown at the top to choose the Academic Year and Semester.
+                - `Accordion` component to organize the semester data:
+                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**: A form with `Input`, `Textarea`, and `Select` fields to capture the semester-specific details.
+                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**: A detailed form for logging time management and other activities.
+                    - **`AccordionItem 3: Academic Performance (Page 7)`**: A `Table` listing subjects for the semester. A `Button` ("Add Subject") opens a `Dialog` to enter subject details and marks from various assessments.
+                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**: A `Table` listing all logged sessions. A `Button` ("Log New Session") opens a `Dialog` with a form for the 10-point ratings and remarks.
+                    - **`AccordionItem 5: Semester Review (Page 8)`**: A form with `Textarea` fields for the mentor's final review of the semester.
+            - **`Tab 3: Program Summary`**: A view consolidating all semester data (Page 9), project details, and placement information.
+
+### 6.4 Student UI
+
+- **6.4.1 Profile Completion Page (First Login)**
+    - **Description:** A multi-step form the student must complete after their first login.
+    - **Components:**
+        - A form wizard with steps for:
+            - Changing their temporary password.
+            - Filling in personal details (Pages 1-3).
+            - Filling in parent/sibling details.
+            - Uploading photos.
+        - `Input`, `DatePicker`, `Select`, and file upload components will be used.
+- **6.4.2 Student Dashboard / Profile View**
+    - **Description:** A read-only view of their complete mentoring profile.
+    - **Components:**
+        - The same layout as the Mentor's "Student Profile Page" (`Tabs`, `Accordion`, etc.) but all form fields are disabled (read-only). This allows them to see all the data entered by their mentor.
+
+### 7. API Endpoints Specification
+
+(This section will be updated to reflect the new data structures, e.g., adding endpoints for `StudentGeneralProfile`, `SemesterMentoringActivity`, `SemesterReviews`)
+
+### 8. Database Schema (PostgreSQL)
+
+This section provides the updated SQL statements to create the database schema.
+
+```
+-- Programs Table (New)
+CREATE TABLE Programs (
+    program_id SERIAL PRIMARY KEY,
+    program_name VARCHAR(255) UNIQUE NOT NULL, -- e.g., 'Bachelor of Engineering', 'MBA'
+    duration_years INT NOT NULL -- e.g., 4, 2
+);
+
 -- Users Table: For authentication and roles
 CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
@@ -184,107 +370,46 @@ CREATE TABLE Users (
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255),
     role VARCHAR(50) NOT NULL CHECK (role IN ('Administrator', 'HOD', 'Mentor', 'Student', 'Parent')),
+    department VARCHAR(255), -- Department for HOD and Mentor roles
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Students Table
+-- Students Table (Core, mostly static info)
 CREATE TABLE Students (
     student_id SERIAL PRIMARY KEY,
     user_id INT UNIQUE REFERENCES Users(user_id) ON DELETE SET NULL,
+    program_id INT REFERENCES Programs(program_id), -- Link to the program
     register_number VARCHAR(100) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
-    batch VARCHAR(50),
+    batch VARCHAR(50), -- e.g., '2023-2027', can be auto-calculated
     branch VARCHAR(100),
     section CHAR(1),
     date_of_birth DATE,
     sex VARCHAR(20),
-    nationality VARCHAR(100),
-    state VARCHAR(100),
-    religion VARCHAR(100),
-    community VARCHAR(50),
-    caste VARCHAR(100),
-    landline VARCHAR(20),
-    mobile VARCHAR(20),
-    email VARCHAR(255),
-    blood_group VARCHAR(10),
-    address_communication TEXT,
-    address_permanent TEXT,
-    mother_tongue VARCHAR(100),
-    languages_known TEXT,
-    mode_of_admission VARCHAR(100),
-    chronic_illness TEXT,
-    vision_problem BOOLEAN,
+    -- ... other core personal details from pages 1-3 ...
+    address_final TEXT, -- For address at time of leaving
     photo_admission_url VARCHAR(255),
     photo_leaving_url VARCHAR(255)
 );
 
--- Parents Table
-CREATE TABLE Parents (
-    parent_id SERIAL PRIMARY KEY,
+-- Student General Profile (One-time data from Page 4)
+CREATE TABLE StudentGeneralProfile (
+    profile_id SERIAL PRIMARY KEY,
     student_id INT UNIQUE NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
-    father_name VARCHAR(255),
-    father_education VARCHAR(255),
-    father_occupation VARCHAR(255),
-    father_annual_income NUMERIC(12, 2),
-    father_photo_url VARCHAR(255),
-    mother_name VARCHAR(255),
-    mother_education VARCHAR(255),
-    mother_occupation VARCHAR(255),
-    mother_annual_income NUMERIC(12, 2),
-    mother_photo_url VARCHAR(255),
-    parent_contact_landline VARCHAR(20),
-    parent_contact_mobile VARCHAR(20)
+    long_term_ambition TEXT,
+    career_option VARCHAR(100), -- 'Higher Studies', 'Job', 'Entrepreneur'
+    swot_strength_academic TEXT,
+    swot_strength_general TEXT,
+    swot_weakness_academic TEXT,
+    swot_weakness_general TEXT,
+    living_style_details TEXT,
+    last_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Siblings Table
-CREATE TABLE Siblings (
-    sibling_id SERIAL PRIMARY KEY,
-    student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
-    name VARCHAR(255),
-    age INT,
-    sex VARCHAR(20),
-    education_profession VARCHAR(255)
-);
+-- Parents Table, Siblings Table, Education History Table (remain largely the same)
+-- ...
 
--- Education History Table
-CREATE TABLE EducationHistory (
-    education_id SERIAL PRIMARY KEY,
-    student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
-    level VARCHAR(50) NOT NULL, -- e.g., '10th', '12th', 'Diploma'
-    school_institution VARCHAR(255),
-    board VARCHAR(255),
-    medium_of_instruction VARCHAR(100),
-    marks_obtained VARCHAR(100),
-    percentage NUMERIC(5, 2),
-    subjects TEXT
-);
-
--- Mentor Assignments Table
-CREATE TABLE MentorAssignments (
-    assignment_id SERIAL PRIMARY KEY,
-    mentor_id INT NOT NULL REFERENCES Users(user_id) ON DELETE CASCADE,
-    student_id INT UNIQUE NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE, -- UNIQUE ensures one mentor per student
-    assigned_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- Mentoring Sessions Table
-CREATE TABLE MentoringSessions (
-    session_id SERIAL PRIMARY KEY,
-    student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
-    mentor_id INT NOT NULL REFERENCES Users(user_id),
-    session_date DATE NOT NULL,
-    rating_as_person INT CHECK (rating_as_person BETWEEN 1 AND 10),
-    rating_character INT CHECK (rating_character BETWEEN 1 AND 10),
-    rating_behavior INT CHECK (rating_behavior BETWEEN 1 AND 10),
-    rating_studies INT CHECK (rating_studies BETWEEN 1 AND 10),
-    rating_knowledge INT CHECK (rating_knowledge BETWEEN 1 AND 10),
-    total_rating INT,
-    mentor_remarks TEXT,
-    disciplinary_issues TEXT,
-    mentor_observations TEXT
-);
-
--- Academic Performance Table
+-- Academic Performance Table (Per Semester)
 CREATE TABLE AcademicPerformance (
     performance_id SERIAL PRIMARY KEY,
     student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
@@ -297,41 +422,62 @@ CREATE TABLE AcademicPerformance (
     UNIQUE(student_id, year, semester)
 );
 
--- Subjects Performance Table
-CREATE TABLE SubjectsPerformance (
-    subject_performance_id SERIAL PRIMARY KEY,
-    performance_id INT NOT NULL REFERENCES AcademicPerformance(performance_id) ON DELETE CASCADE,
-    subject_code VARCHAR(50),
-    subject_name VARCHAR(255),
-    internal_assessment_1 NUMERIC(5, 2),
-    internal_assessment_2 NUMERIC(5, 2),
-    model_exam NUMERIC(5, 2),
-    internal_mark NUMERIC(5, 2),
-    credit NUMERIC(3, 1),
-    grade CHAR(2),
-    result VARCHAR(10) -- e.g., 'Pass', 'Fail'
+-- Semester Mentoring Activity (Per Semester data from Page 5)
+CREATE TABLE SemesterMentoringActivity (
+    activity_id SERIAL PRIMARY KEY,
+    student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
+    year INT NOT NULL,
+    semester INT NOT NULL,
+    field_of_interest TEXT,
+    favourite_subject TEXT,
+    hardest_subject TEXT,
+    library_visit_frequency VARCHAR(100),
+    -- ... other fields from page 5 ...
+    UNIQUE(student_id, year, semester)
 );
 
--- Mentoring Chart Table
+-- Mentoring Chart Table (Per Semester data from Page 6 - remains the same)
 CREATE TABLE MentoringCharts (
     chart_id SERIAL PRIMARY KEY,
+    student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
+    year INT NOT NULL,
+    semester INT NOT NULL,
+    -- ... fields for time management, ratings etc. ...
+    class_routine_ratings JSONB,
+    monthly_test_ratings JSONB,
+    university_exam_prep JSONB,
+    UNIQUE(student_id, year, semester)
+);
+
+-- Mentoring Sessions Table (Multiple per semester, from Page 7)
+CREATE TABLE MentoringSessions (
+    session_id SERIAL PRIMARY KEY,
     student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
     mentor_id INT NOT NULL REFERENCES Users(user_id),
     year INT NOT NULL,
     semester INT NOT NULL,
-    -- Time Management
-    hours_subject_reading INT,
-    hours_light_reading INT,
-    hours_other_preparations INT,
-    hours_browsing INT,
-    hours_social_networks INT,
-    hours_sports INT,
-    -- Flexible fields for other chart data
-    class_routine_ratings JSONB,
-    monthly_test_ratings JSONB,
-    university_exam_prep JSONB,
-    other_activities TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    session_date DATE NOT NULL,
+    rating_as_person INT,
+    -- ... other rating fields ...
+    mentor_remarks TEXT
+);
+
+-- Semester Reviews Table (One per semester, from Page 8)
+CREATE TABLE SemesterReviews (
+    review_id SERIAL PRIMARY KEY,
+    student_id INT NOT NULL REFERENCES Students(student_id) ON DELETE CASCADE,
+    mentor_id INT NOT NULL REFERENCES Users(user_id),
+    year INT NOT NULL,
+    semester INT NOT NULL,
+    overall_remarks TEXT,
+    disciplinary_issues TEXT,
+    follow_up_required BOOLEAN DEFAULT FALSE,
     UNIQUE(student_id, year, semester)
 );
+
+-- Projects Table, Placements Table (remain largely the same)
+-- ...
+
 ```
+
+
