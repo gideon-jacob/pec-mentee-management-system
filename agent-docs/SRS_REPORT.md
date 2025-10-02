@@ -115,15 +115,16 @@ The application will be a web-based platform accessible through modern web brows
     - The system shall provide a dedicated section to record placement details, including company, date, and outcome.
 - **3.3.2 Final Data Summary:**
     - The system shall provide a summary view that
-      
-        consolidates semester-wise data (CGPA, attendance, etc.) into a single report, as seen on page 9 of the PDF.
-        
+    consolidates semester-wise data (CGPA, attendance, etc.) into a single report, as seen on page 9 of the PDF.
     - The system shall allow for updating the student's contact address at the time of leaving the college.
 
 ### 3.4 Other Functional Requirements
 
 - **3.4.1 Mentor-Mentee Management:** The system shall allow administrators to assign and unassign students to mentors.
-- **3.4.2 Offline Functionality:** The system shall cache essential data and allow offline entry for mentoring sessions and academic data, with synchronization upon reconnection.
+- **3.4.2 Program and Branch Management:**
+    - The system shall allow administrators to create, read, update, and delete academic Programs (e.g., B.E., M.B.A.).
+    - The system shall allow administrators to create, read, update, and delete academic Branches (e.g., Computer Science Engineering) and associate them with a Program.
+- **3.4.3 Offline Functionality:** The system shall cache essential data and allow offline entry for mentoring sessions and academic data, with synchronization upon reconnection.
 
 ### 4. External Interface Requirements
 
@@ -133,8 +134,12 @@ The application will feature a clean, modern, and intuitive graphical user inter
 
 - A centralized dashboard for each user role providing a quick overview of relevant information (e.g., list of mentees for a mentor, departmental stats for an HOD).
 - User-friendly forms for data entry with clear labels, placeholders, and real-time validation to minimize errors.
-- Interactive tables for displaying lists of students and academic data, with robust sorting, filtering, and search capabilities.
+- Interactive and responsive tables for displaying lists of students and academic data, with robust sorting, filtering, and search capabilities.
 - A dedicated and comprehensive profile page for each student, presenting all information in a well-organized and easily digestible manner, separated by general and semester-specific data.
+- **4.1.1 Responsive Table Behavior (Card-Based Transformation)**
+    - To ensure optimal usability on all devices, particularly mobile, all data tables within the application will adopt a responsive transformation.
+    - **On Large Screens (Desktops/Tablets):** Tables will render in their standard columnar format.
+    - **On Small Screens (Mobile):** Each row of the table will transform into a `Card` component. Inside each card, the data from the columns will be displayed vertically, with clear `Labels` for each data point (e.g., "Register Number:", "Program:"). Action buttons or menus (like "View Profile" or "Edit") will be given prominence, often rendered as a full-width button at the bottom of the card for easy tapping. This approach avoids horizontal scrolling and presents information in a digestible, mobile-friendly format.
 
 ### 4.2 Hardware Interfaces
 
@@ -202,150 +207,7 @@ As a web-based application, the system will not interface directly with any spec
 
 ### 6. UI Description
 
-This section outlines the page-by-page user interface for each role. Components mentioned will be from the Shadcn/ui library.
-
-### 6.1 Common Pages
-
-- **6.1.1 Role Selection Page (Landing Page)**
-    - **Description:** The initial page a user sees, allowing them to select their role. Clicking an option will navigate the user to a dedicated login path.
-    - **Components:**
-        - `Grid` or `Flex container` holding three options.
-        - `Card` 1: Titled "Student Login". Clicking this navigates to `/login/student`.
-        - `Card` 2: Titled "Parent Login". Clicking this navigates to `/login/parent`.
-        - `Card` 3: Titled "Faculty/Admin Login". Clicking this navigates to `/login/faculty`.
-- **6.1.2 Login Page**
-    - **Description:** A centered card on the screen for user authentication. The application will have distinct routes (`/login/student`, `/login/parent`, `/login/faculty`) for each user type.
-    - **Components:**
-        - `Card`: Main container for the login form.
-        - `CardHeader`: Displays a static title corresponding to the route (e.g., "Student Login").
-        - `CardContent`: Contains the form fields.
-            - `Input` field for Username (or Register Number for students/parents).
-            - `Input` field for Password (type="password").
-        - `CardFooter`: Contains the `Button` for submitting the form ("Login").
-
-### 6.2 Administrator UI
-
-- **6.2.1 Admin Dashboard**
-    - **Description:** The main landing page after login, providing a high-level overview and navigation.
-    - **Components:**
-        - `Header`: Displays the application name and a dropdown menu with user info and a "Logout" button.
-        - `Sidebar`: Navigation links to "Dashboard", "User Management", "Student Management".
-        - `Grid` of `Card` components displaying key metrics: Total Students, Total Mentors, Total HODs.
-        - `Card` with "Quick Actions" containing buttons to "Create New User" and "Create Student Profile".
-- **6.2.2 User Management Page**
-    - **Description:** A page to manage all non-student user accounts (Administrators, HODs, and Mentors).
-    - **Components:**
-        - `Table`: Lists all users with columns for Full Name, Username, Role, Department, and Actions.
-            - `DropdownMenu` in the Actions column with options to "Edit" or "Deactivate" user.
-        - **Create/Edit User Interface (Dialog):**
-            - **Trigger:**
-                - A `Button` with the label "Create New User" will be positioned above the user table. Clicking this button will open the creation dialog.
-                - The "Edit" option within the `DropdownMenu` in the user table's "Actions" column will open the same dialog, but pre-populated with the selected user's data.
-            - **Dialog Component:**
-                - `DialogContent`: A modal window that appears overlaid on the page.
-                - `DialogHeader`:
-                    - `DialogTitle`: The title will dynamically change. It will display "Create New User" when creating, and "Edit User: [User's Name]" when editing.
-                    - `DialogDescription`: A brief instruction, e.g., "Fill in the details below to create or update a user account."
-                - **Form Fields:**
-                    - `Label` for "Full Name": Paired with an `Input` field for the user's full name.
-                    - `Label` for "Username": Paired with an `Input` field for the login username. This field will be disabled when editing a user.
-                    - `Label` for "Password": Paired with an `Input` of `type="password"`. When creating a user, this is a required field. When editing, it can be left blank if the password is not being changed. A sub-text will indicate this.
-                    - `Label` for "Role": Paired with a `Select` component (dropdown).
-                        - `SelectTrigger`: Shows the currently selected role.
-                        - `SelectContent`: Contains the options: "Administrator", "HOD", "Mentor".
-                    - `Label` for "Department": Paired with a `Select` component.
-                        - `SelectContent`: Contains a list of all available departments (e.g., "Computer Science", "Mechanical Engineering"). This field is required if the selected role is "HOD" or "Mentor".
-                - `DialogFooter`:
-                    - `Button` with "Cancel" text: Closes the dialog without saving changes.
-                    - `Button` with "Save" text: Submits the form to create or update the user.
-- **6.2.3 Student Management Page**
-    - **Description:** A page to create initial student profiles and view/manage all students, including their mentor assignments.
-    - **Components:**
-        - **Action Buttons Bar:** A container above the table holding key action buttons.
-            - `Button` ("Create Student Profile"): Opens a dialog for creating a single student.
-            - `Button` ("Bulk Edit Mentor Assignment"): This button is disabled by default and becomes active when one or more students are selected in the table below. It opens the bulk edit dialog.
-        - `Dialog` (for Create Student): A form with `Input` fields for Student Name, Register Number, a `Select` dropdown for the student's **Program** (e.g., "B.E.", "M.B.A."), and a `Select` dropdown for their Branch/Department. The **Batch** (e.g., "2023-2027") will be auto-calculated based on the current year and the selected program's duration. Upon submission, it displays the auto-generated temporary password for the student.
-        - `Table`: Lists all students with columns for:
-            - A `Checkbox` in the header for "Select All" and in each row for individual selection.
-            - Name, Register Number, Branch, Batch, Assigned Mentor, and **Actions**.
-            - Includes search and filter capabilities with pagination.
-            - **`DropdownMenu` in the Actions column (for single-student actions):**
-                - "Edit Mentor Assignment": Opens the mentor modification dialog for an individual student.
-                - "View Full Profile": Navigates to the student's detailed profile page.
-        - **Edit Mentor Assignment Interface (Dialog for single student):**
-            - **Trigger:** The "Edit Mentor Assignment" option in the student table's `DropdownMenu`.
-            - **Dialog Component:**
-                - `DialogContent`: The main container for the modal's content, which is a form.
-                - `DialogHeader`:
-                    - `DialogTitle`: "Edit Mentor for [Student Name]".
-                    - `DialogDescription`: Displays the current assignment status, e.g., "Currently assigned to: [Mentor Name]" or "This student is currently unassigned."
-                - **Form Fields:**
-                    - `Label` for "New Mentor": Paired with a `Select` component.
-                        - `SelectTrigger`: Shows the currently selected new mentor.
-                        - `SelectContent`: Contains a list of all available mentors, with a special first option "-- Unassign --" to remove the current mentor.
-                - `DialogFooter`:
-                    - `Button` "Cancel".
-                    - `Button` "Save Assignment".
-        - **Bulk Edit Mentor Assignment Interface (Dialog for multiple students):**
-            - **Trigger:** The "Bulk Edit Mentor Assignment" button.
-            - **Dialog Component:**
-                - `DialogContent`: The main container for the modal's content, which is a form.
-                - `DialogHeader`:
-                    - `DialogTitle`: "Bulk Edit Mentor Assignment".
-                    - `DialogDescription`: Displays the number of students selected, e.g., "You are about to change the mentor for [X] selected students."
-                - **Form Fields:**
-                    - `Label` for "New Mentor": Paired with a `Select` component.
-                        - `SelectTrigger`: Shows a placeholder. If the selected students all have the same mentor, it will show that mentor's name. If the selected students have different mentors, it will show a placeholder text like "-- Multiple Values --".
-                        - `SelectContent`: Contains a list of all available mentors, with a special first option "-- Unassign --" to remove the current mentor.
-                - `DialogFooter`:
-                    - `Button` "Cancel".
-                    - `Button` "Save Assignment".
-- **6.2.4 Mentor Assignment Page**
-    - **Description:** An interface to perform bulk assignment of unassigned students to a mentor.
-    - **Components:**
-        - Two-panel layout.
-        - **Left Panel:** A `Card` containing a list of all unassigned students, with checkboxes next to each name.
-        - **Right Panel:** A `Card` with a `Select` dropdown to choose a Mentor. Below it, a `Button` ("Assign Selected Students") to perform the assignment.
-
-### 6.3 Mentor UI
-
-- **6.3.1 Mentor Dashboard**
-    - **Description:** The landing page showing the list of assigned mentees.
-    - **Components:**
-        - `Header` and `Sidebar` for navigation.
-        - `Card` titled "My Mentees".
-        - `Table`: Lists all assigned mentees with columns for Name, Register Number, and Branch. Each row is clickable to navigate to the student's detailed profile. Includes a search bar.
-- **6.3.2 Student Profile Page**
-    - **Description:** The main workspace for a mentor to view and update a specific student's data.
-    - **Components:**
-        - `Header`: Displays the Student's Name and Register Number.
-        - `Tabs` component to switch between views:
-            - **`Tab 1: General Profile`**: A read-only view of the student's onboarding and general profile data (Pages 1-4), with an "Edit" button for fields the mentor can update.
-            - **`Tab 2: Semester Details`**: Contains all per-semester information.
-                - `Select` dropdown at the top to choose the Academic Year and Semester.
-                - `Accordion` component to organize the semester data:
-                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**: A form with `Input`, `Textarea`, and `Select` fields to capture the semester-specific details.
-                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**: A detailed form for logging time management and other activities.
-                    - **`AccordionItem 3: Academic Performance (Page 7)`**: A `Table` listing subjects for the semester. A `Button` ("Add Subject") opens a `Dialog` to enter subject details and marks from various assessments.
-                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**: A `Table` listing all logged sessions. A `Button` ("Log New Session") opens a `Dialog` with a form for the 10-point ratings and remarks.
-                    - **`AccordionItem 5: Semester Review (Page 8)`**: A form with `Textarea` fields for the mentor's final review of the semester.
-            - **`Tab 3: Program Summary`**: A view consolidating all semester data (Page 9), project details, and placement information.
-
-### 6.4 Student UI
-
-- **6.4.1 Profile Completion Page (First Login)**
-    - **Description:** A multi-step form the student must complete after their first login.
-    - **Components:**
-        - A form wizard with steps for:
-            - Changing their temporary password.
-            - Filling in personal details (Pages 1-3).
-            - Filling in parent/sibling details.
-            - Uploading photos.
-        - `Input`, `DatePicker`, `Select`, and file upload components will be used.
-- **6.4.2 Student Dashboard / Profile View**
-    - **Description:** A read-only view of their complete mentoring profile.
-    - **Components:**
-        - The same layout as the Mentor's "Student Profile Page" (`Tabs`, `Accordion`, etc.) but all form fields are disabled (read-only). This allows them to see all the data entered by their mentor.
+Please refer to the `ui_descriptions.md` document for a detailed, page-by-page breakdown of the user interface for each role.
 
 ### 7. API Endpoints Specification
 
@@ -356,11 +218,19 @@ This section outlines the page-by-page user interface for each role. Components 
 This section provides the updated SQL statements to create the database schema.
 
 ```
--- Programs Table (New)
+-- Programs Table (e.g., B.E., M.B.A.)
 CREATE TABLE Programs (
     program_id SERIAL PRIMARY KEY,
-    program_name VARCHAR(255) UNIQUE NOT NULL, -- e.g., 'Bachelor of Engineering', 'MBA'
+    program_name VARCHAR(255) UNIQUE NOT NULL, -- e.g., 'B.E.', 'M.B.A.'
     duration_years INT NOT NULL -- e.g., 4, 2
+);
+
+-- Branches Table (e.g., Computer Science, Finance)
+CREATE TABLE Branches (
+    branch_id SERIAL PRIMARY KEY,
+    program_id INT NOT NULL REFERENCES Programs(program_id) ON DELETE CASCADE,
+    branch_name VARCHAR(255) NOT NULL,
+    UNIQUE(program_id, branch_name)
 );
 
 -- Users Table: For authentication and roles
@@ -378,11 +248,10 @@ CREATE TABLE Users (
 CREATE TABLE Students (
     student_id SERIAL PRIMARY KEY,
     user_id INT UNIQUE REFERENCES Users(user_id) ON DELETE SET NULL,
-    program_id INT REFERENCES Programs(program_id), -- Link to the program
+    branch_id INT REFERENCES Branches(branch_id), -- Link to the branch
     register_number VARCHAR(100) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     batch VARCHAR(50), -- e.g., '2023-2027', can be auto-calculated
-    branch VARCHAR(100),
     section CHAR(1),
     date_of_birth DATE,
     sex VARCHAR(20),
@@ -479,5 +348,6 @@ CREATE TABLE SemesterReviews (
 -- ...
 
 ```
+
 
 

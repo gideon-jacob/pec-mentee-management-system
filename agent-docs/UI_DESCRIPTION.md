@@ -1,0 +1,267 @@
+### 6. UI Description
+
+This section outlines the page-by-page user interface for each role. Components mentioned will be from the Shadcn/ui library.
+
+### 6.0 Common Layout Components
+
+For all authenticated users (Admin, Mentor, Student, etc.), the application will use a consistent master layout which includes a persistent Header and a collapsible Sidebar for navigation.
+
+- **6.0.1 Header**
+    - **Description:** A sticky header bar at the top of the viewport.
+    - **Components:**
+        - **Left Side:** Application Logo and Name ("Student Mentoring App").
+        - **Right Side:** `DropdownMenu` triggered by a user `Avatar` component.
+            - **Dropdown Content:**
+                - `DropdownMenuItem` (non-interactive): Displays the logged-in user's Full Name and Role (e.g., "John Doe - Administrator").
+                - `DropdownMenuSeparator`: A horizontal line.
+                - `DropdownMenuItem` ("Logout"): A button that logs the user out and redirects them to the Role Selection Page.
+- **6.0.2 Sidebar**
+    - **Description:** A navigation sidebar on the left side of the screen. It will be collapsible to save horizontal space. The navigation links displayed will be dynamic based on the logged-in user's role.
+    - **Components:**
+        - `NavigationMenu`: A vertical list of links.
+        - **Administrator Links:** "Dashboard", "User Management", "Student Management", "Mentor Assignment", "Academic Management".
+        - **Mentor Links:** "Dashboard" (shows their mentee list), "My Profile".
+        - **Student/Parent Links:** "My Profile" (read-only view).
+
+### 6.1 Common Pages
+
+- **6.1.1 Role Selection Page (Landing Page)**
+    - **Description:** The initial page a user sees, allowing them to select their role. Clicking an option will navigate the user to a dedicated login path.
+    - **Components:**
+        - `Grid` or `Flex container` holding three options.
+        - `Card` 1: Titled "Student Login". Clicking this navigates to `/login/student`.
+        - `Card` 2: Titled "Parent Login". Clicking this navigates to `/login/parent`.
+        - `Card` 3: Titled "Faculty/Admin Login". Clicking this navigates to `/login/faculty`.
+- **6.1.2 Login Page**
+    - **Description:** A centered card on the screen for user authentication. The application will have distinct routes (`/login/student`, `/login/parent`, `/login/faculty`) for each user type.
+    - **Components:**
+        - `Card`: Main container for the login form.
+        - `CardHeader`: Displays a static title corresponding to the route (e.g., "Student Login").
+        - `CardContent`: Contains the form fields.
+            - `Input` field for Username (or Register Number for students/parents).
+            - `Input` field for Password (type="password").
+        - `CardFooter`: Contains the `Button` for submitting the form ("Login").
+
+### 6.2 Administrator UI
+
+- **6.2.1 Admin Dashboard**
+    - **Description:** The main landing page after login, providing a high-level overview and navigation. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - `Grid` of `Card` components displaying key metrics: Total Students, Total Mentors, Total HODs.
+        - `Card` with "Quick Actions" containing buttons to "Create New User" and "Create Student Profile".
+- **6.2.2 User Management Page**
+    - **Description:** A page to manage all non-student user accounts (Administrators, HODs, and Mentors). This page uses the common layout described in section 6.0.
+    - **Components:**
+        - `Table`: Lists all users with columns for Full Name, Username, Role, Department, and Actions. This table will implement the responsive behavior described in section 4.1.1.
+            - `DropdownMenu` in the Actions column with options to "Edit" or "Deactivate" user.
+        - **Create/Edit User Interface (Dialog):**
+            - **Trigger:**
+                - A `Button` with the label "Create New User" will be positioned above the user table. Clicking this button will open the creation dialog.
+                - The "Edit" option within the `DropdownMenu` in the user table's "Actions" column will open the same dialog, but pre-populated with the selected user's data.
+            - **Dialog Component:**
+                - `DialogContent`: A modal window that appears overlaid on the page.
+                - `DialogHeader`:
+                    - `DialogTitle`: The title will dynamically change. It will display "Create New User" when creating, and "Edit User: [User's Name]" when editing.
+                    - `DialogDescription`: A brief instruction, e.g., "Fill in the details below to create or update a user account."
+                - **Form Fields:**
+                    - `Label` for "Full Name": Paired with an `Input` field for the user's full name.
+                    - `Label` for "Username": Paired with an `Input` field for the login username. This field will be disabled when editing a user.
+                    - `Label` for "Password": Paired with an `Input` of `type="password"`. When creating a user, this is a required field. When editing, it can be left blank if the password is not being changed. A sub-text will indicate this.
+                    - `Label` for "Role": Paired with a `Select` component (dropdown).
+                        - `SelectTrigger`: Shows the currently selected role.
+                        - `SelectContent`: Contains the options: "Administrator", "HOD", "Mentor".
+                    - `Label` for "Department": Paired with a `Select` component.
+                        - `SelectContent`: Contains a list of all available departments (e.g., "Computer Science", "Mechanical Engineering"). This field is required if the selected role is "HOD" or "Mentor".
+                - `DialogFooter`:
+                    - `Button` with "Cancel" text: Closes the dialog without saving changes.
+                    - `Button` with "Save" text: Submits the form to create or update the user.
+- **6.2.3 Student Management Page**
+    - **Description:** A page to create initial student profiles and view/manage all students, including their mentor assignments. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - **Action Buttons Bar:** A container above the table holding key action buttons.
+            - `Button` ("Create Student Profile"): Opens a dialog for creating a single student.
+            - `Button` ("Bulk Edit Mentor Assignment"): This button is disabled by default and becomes active when one or more students are selected in the table below. It opens the bulk edit dialog.
+        - `Dialog` (for Create Student): A form with `Input` fields for Student Name and Register Number, along with two `Select` dropdowns: one for the student's **Program** (e.g., "B.E.", "M.B.A.") and another for the **Branch** (e.g., "Computer Science Engineering", "Finance"). The **Batch** (e.g., "2023-2027") will be auto-calculated based on the current year and the selected program's duration. Upon submission, it displays the auto-generated temporary password for the student.
+        - `Table`: Lists all students with columns for: A `Checkbox`, Name, Register Number, Program, Batch, Assigned Mentor, and **Actions**. This table will implement the responsive behavior described in section 4.1.1.
+            - The table header will feature a master `Checkbox` with three states: unchecked (no students on the current page selected), indeterminate/partially checked (some students on the current page selected), and checked (all students on the current page selected).
+            - Includes search and filter capabilities with pagination.
+            - **`DropdownMenu` in the Actions column (for single-student actions):**
+                - "Edit Mentor Assignment": Opens the mentor modification dialog for an individual student.
+                - "View Full Profile": Navigates to the student's detailed profile page.
+        - **Edit Mentor Assignment Interface (Dialog for single student):**
+            - **Trigger:** The "Edit Mentor Assignment" option in the student table's `DropdownMenu`.
+            - **Dialog Component:**
+                - `DialogContent`: The main container for the modal's content, which is a form.
+                - `DialogHeader`:
+                    - `DialogTitle`: "Edit Mentor for [Student Name]".
+                    - `DialogDescription`: Displays the current assignment status, e.g., "Currently assigned to: [Mentor Name]" or "This student is currently unassigned."
+                - **Form Fields:**
+                    - `Label` for "New Mentor": Paired with a `Select` component.
+                        - `SelectTrigger`: Shows the currently selected new mentor.
+                        - `SelectContent`: Contains a list of all available mentors, with a special first option "-- Unassign --" to remove the current mentor.
+                - `DialogFooter`:
+                    - `Button` "Cancel".
+                    - `Button` "Save Assignment".
+        - **Bulk Edit Mentor Assignment Interface (Dialog for multiple students):**
+            - **Trigger:** The "Bulk Edit Mentor Assignment" button.
+            - **Dialog Component:**
+                - `DialogContent`: The main container for the modal's content, which is a form.
+                - `DialogHeader`:
+                    - `DialogTitle`: "Bulk Edit Mentor Assignment".
+                    - `DialogDescription`: Displays the number of students selected, e.g., "You are about to change the mentor for [X] selected students."
+                - **Form Fields:**
+                    - `Label` for "New Mentor": Paired with a `Select` component.
+                        - `SelectTrigger`: Shows a placeholder. If the selected students all have the same mentor, it will show that mentor's name. If the selected students have different mentors, it will show a placeholder text like "-- Multiple Values --".
+                        - `SelectContent`: Contains a list of all available mentors, with a special first option "-- Unassign --" to remove the current mentor.
+                - `DialogFooter`:
+                    - `Button` "Cancel".
+                    - `Button` "Save Assignment".
+- **6.2.4 Mentor Assignment Page**
+    - **Description:** An interface to perform bulk assignment of unassigned students to a mentor. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - Two-panel layout.
+        - **Left Panel:** A `Card` containing a list of all unassigned students. The list will be rendered as a responsive table (as per section 4.1.1) with a master `Checkbox` in the header (with three states) and individual `Checkbox` elements next to each student's name.
+        - **Right Panel:** A `Card` with a `Select` dropdown to choose a Mentor. Below it, a `Button` ("Assign Selected Students") to perform the assignment.
+- **6.2.5 Academic Management Page**
+    - **Description:** A dedicated page for administrators to manage the core academic structures of the institution. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - `Tabs` component to switch between managing "Programs" and "Branches".
+            - **`Tab 1: Programs`**:
+                - `Button` ("Create Program"): Opens a dialog to create a new program.
+                - `Table`: Lists all existing programs with columns for Program Name, Duration (in years), and Actions. Implements responsive behavior from section 4.1.1.
+                    - `DropdownMenu` in the Actions column with "Edit" and "Delete" options.
+                - **Create/Edit Program Dialog:** A `Dialog` with `Input` fields for "Program Name" and "Duration".
+                - **Delete Program Dialog:** A confirmation `AlertDialog` to prevent accidental deletion.
+            - **`Tab 2: Branches`**:
+                - `Button` ("Create Branch"): Opens a dialog to create a new branch.
+                - `Table`: Lists all existing branches with columns for Branch Name, Associated Program, and Actions. Implements responsive behavior from section 4.1.1.
+                    - `DropdownMenu` in the Actions column with "Edit" and "Delete" options.
+                - **Create/Edit Branch Dialog:** A `Dialog` with an `Input` for "Branch Name" and a `Select` dropdown to choose the "Associated Program".
+                - **Delete Branch Dialog:** A confirmation `AlertDialog`.
+
+### 6.3 Mentor UI
+
+- **6.3.1 Mentor Dashboard**
+    - **Description:** The landing page showing the list of assigned mentees. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - `Card` titled "My Mentees".
+        - `Table`: Lists all assigned mentees with columns for Name, Register Number, Section, and Current Academic Year. Includes a search bar. This table will implement the responsive behavior described in section 4.1.1.
+            - **Interaction:** For enhanced usability, each row in the table (on large screens) and each card (on small screens) will be a clickable element. Clicking anywhere on the row/card will navigate the mentor directly to that student's detailed profile page.
+- **6.3.2 Student Profile Page**
+    - **Description:** The main workspace for a mentor to view and update a specific student's data. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - `Header` element at the top of the main content area (distinct from the main layout header): Displays the Student's Name and Register Number.
+        - `Tabs` component to switch between views:
+            - **`Tab 1: General Profile`**: A read-only view of the student's onboarding and general profile data (Pages 1-4), with an "Edit" button for fields the mentor can update. This section contains multiple sub-sections organized in `Card` components:
+                - **Personal & Contact Details:** `DatePicker` for Date of Birth, `Select` for Sex and Community, various `Input` fields for Nationality, Religion, Caste, Contact Numbers, Email, and Blood Group.
+                - **Family Details:**
+                    - `FileUpload` for Student, Father, and Mother photos. `Input` fields for Parent's Names, Education, Occupation and Contact Numbers.
+                    - `Button` ("Add Sibling"): Positioned above the siblings table, this opens the dialog to add a new sibling.
+                    - `Table` to display sibling details with columns for Name, Age, Sex, Profession, and Actions.
+                        - `DropdownMenu` in the Actions column for each sibling with options to "Edit" or "Delete".
+                    - **Add/Edit Sibling Dialog:**
+                        - **Trigger:** The "Add Sibling" button or the "Edit" option in a sibling's `DropdownMenu`.
+                        - `DialogContent`: Contains a form for sibling details.
+                        - `DialogHeader`: `DialogTitle` of "Add Sibling Details" or "Edit Sibling Details".
+                        - **Form Fields:** `Input` for Name, `Input` type="number" for Age, `Select` for Sex, and `Input` for Education/Profession.
+                        - `DialogFooter`: `Button` for "Cancel" and `Button` for "Save".
+                    - **Delete Sibling Dialog:** A confirmation `AlertDialog` triggered by the "Delete" option.
+                    - **Local Guardian Details (if applicable):** A dedicated section with `Input` fields for Guardian Name, a `Textarea` for Address, and `Input` fields for Contact Numbers.
+                - **Address & Academic History:**
+                    - `Card` for "Addresses":
+                        - `Textarea` for "Address for Communication (Parents)".
+                        - `Textarea` for "Permanent Address (Student)".
+                        - `Button` ("Update Present Address"): Opens a dialog to edit the present address for the current academic year.
+                        - `Table` for "Present Address History": Displays the address for each academic year (Year I, Year II, etc.).
+                    - `Card` for "10th Standard Details":
+                        - `Input` field for "School".
+                        - `Input` field for "Board".
+                        - `Input` field for "Medium of Instruction".
+                        - `Input` field for "Marks Awarded" (type="number").
+                        - `Input` field for "Total Marks" (type="number").
+                    - `Card` for "12th Standard / Diploma Details":
+                        - `RadioGroup` to select between "12th Standard" or "Diploma (Lateral Entry)".
+                            - **Data Submission:** This selection will control a boolean field named `isLateral`. Selecting "Diploma (Lateral Entry)" will set `isLateral` to `true`, while selecting "12th Standard" will set it to `false`.
+                        - **If "12th Standard" is selected:**
+                            - `Input` field for "School".
+                            - `Input` field for "Group".
+                            - `Input` field for "Board".
+                            - `Input` field for "Marks Awarded" (type="number").
+                            - `Input` field for "Total Marks" (type="number").
+                            - `Grid` of `Input` fields for subject marks (in percentage): Maths, Physics, Chemistry, and Biology/CS. Each `Input` should be of `type="number"` and accept values from 0 to 100.
+                            - A read-only `Input` field to display the calculated "Cut-off Mark".
+                        - **If "Diploma (Lateral Entry)" is selected:**
+                            - `Input` field for "Institution Name".
+                            - `Input` field for "Branch".
+                            - `Input` field for "Marks/CGPA".
+                - **Miscellaneous Details:**
+                    - `Input` field for "Mother Tongue".
+                    - `Input` field for "Other Languages Known".
+                    - `RadioGroup` for "Mode of Admission" with options like "Counseling" and "Management".
+                    - `RadioGroup` for "Dietary Preference" with options "VEG" and "NON-VEG".
+                    - `RadioGroup` for "Vision Problem" with options "Yes" and "No".
+                    - `Textarea` for "Chronic Illness (if any)".
+                - **Socio-Economic Details:**
+                    - `Input` field for "Father's Annual Income".
+                    - `Input` field for "Mother's Annual Income".
+                    - `Textarea` for "Other Sources of Income (if any)".
+                    - `RadioGroup` for "Undertakes Part-Time Job?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
+                    - `RadioGroup` for "Receives Scholarship?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
+                    - `RadioGroup` for "Receives Other Financial Assistance?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
+                - **Ambition, Career & Self-Analysis:**
+                    - `Card` titled "Ambition, Career & Self-Analysis" containing the following fields:
+                    - **Personal Ambition:**
+                        - `Label` for "Long Term Aim/Goal": Paired with a `Textarea`.
+                        - `Label` for "Plans to Achieve Goal": Paired with a `Textarea`.
+                    - **Career Plan:**
+                        - `Label` for "Career Options": Paired with a `RadioGroup` with options "Higher Studies", "Job", "Entrepreneur".
+                        - `Label` for "Preparation for Career": Paired with a `Textarea`.
+                        - `Label` for "Do you take extra coaching?": Paired with a `RadioGroup` ("Yes"/"No"). If "Yes", a `Textarea` for details is revealed.
+                        - `Label` for "Help required from College/Dept": Paired with a `Textarea`.
+                    - **Self-Analysis (SWOT):**
+                        - `Label` for "Academic Strengths": Paired with a `Textarea`.
+                        - `Label` for "General Strengths": Paired with a `Textarea`.
+                        - `Label` for "Academic Weaknesses": Paired with a `Textarea`.
+                        - `Label` for "General Weaknesses": Paired with a `Textarea`.
+                    - **General Academic & Co-curricular:**
+                        - `Label` for "Do you like this branch?": Paired with a `RadioGroup` ("Yes"/"No"). If "No", a `Textarea` is revealed for the reason.
+                        - `Label` for "Fundamental Mathematics Strength": Paired with a `Select` with options "Strong", "Average", "Weak".
+                        - `Label` for "Fundamental Core Engineering Strength": Paired with a `Select` with options "Strong", "Average", "Weak".
+                        - `Label` for "Are you capable of raising questions in class?": Paired with a `RadioGroup` ("Yes"/"No").
+                        - `Label` for "Interested in Sports & Games?": Paired with a `RadioGroup` ("Yes"/"No"). If "Yes", a `Textarea` for details is revealed.
+                        - `Label` for "How do you spend your free time?": Paired with a `Textarea`.
+                        - `Label` for "Prizes/Awards/Recognitions": Paired with a `Textarea`.
+            - **`Tab 2: Semester Details`**: Contains all per-semester information.
+                - `Select` dropdown at the top to choose the Academic Year and Semester.
+                - `Accordion` component to organize the semester data:
+                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**: A form, partially filled by the student, with `Textarea` and `RadioGroup` components for questions regarding academic interests, study habits, and personal well-being. The mentor can review, edit, and finalize the student's input.
+                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**: A detailed form, partially filled by the student, for logging time management using `Input` fields for hours spent. It includes a section for faculty input where ratings (1-5) on classroom and lab performance are entered via `Select` components in a `Table`.
+                    - **`AccordionItem 3: Academic Performance (Page 7)`**: A `Table` listing subjects for the semester with columns for subject code, name, and marks from various assessments (e.g., IAT 1, Model Exam). This table will implement the responsive behavior described in section 4.1.1. A `Button` ("Add Subject") opens a `Dialog` to enter these details. Below the table, `Input` fields capture attendance details and a `Textarea` is available for remarks.
+                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**: A `Table` listing all logged sessions. This table will implement the responsive behavior described in section 4.1.1. A `Button` ("Log New Session") opens a `Dialog` with a form containing a `DatePicker` for the session date and `Input` fields for the 10-point ratings and remarks.
+                    - **`AccordionItem 5: Semester Review (Page 8)`**: A form with `Textarea` fields for the mentor's final review, including Overall Remarks, Disciplinary Issues, and a `Checkbox` to indicate if follow-up is required. An Analysis Sheet section captures Strength and Weakness in `Textarea` fields and improvements in a `Table` with `Select` dropdowns.
+            - **`Tab 3: Program Summary`**: A view consolidating all semester data, project details, and placement information.
+                - **Semester Data:** A `Table` auto-populated with semester-wise CGPA, Attendance %, etc.
+                - **Projects & Placements:** Two separate `Table` components to display Mini/Final Projects and Placement Details. Each table will have an "Add" `Button` that opens a `Dialog` for data entry.
+                - **Final Details:** A `Textarea` for updating the student's contact address at the time of leaving.
+
+### 6.4 Student UI
+
+- **6.4.1 Profile Completion Page (First Login)**
+    - **Description:** A multi-step form the student must complete after their first login. This page does not use the common layout.
+    - **Components:**
+        - A form wizard with steps for:
+            - Changing their temporary password.
+            - Filling in personal details (Pages 1-3).
+            - Filling in parent/sibling details.
+            - Uploading photos.
+        - `Input`, `DatePicker`, `Select`, and file upload components will be used.
+- **6.4.2 Student Dashboard / Profile View**
+    - **Description:** A view of their complete mentoring profile. This page uses the common layout described in section 6.0.
+    - **Components:**
+        - This page uses the common layout and mirrors the Mentor's "Student Profile Page".
+        - **General Profile & Program Summary Tabs:** These will be read-only.
+        - **Semester Details Tab:** The forms within 'Mentoring Activity (Page 5)' and 'Mentoring Chart (Page 6)' will be editable by the student. Once the mentor reviews and finalizes these sections for the semester, they will become read-only for the student. All other sections (Academic Performance, Sessions, Review) will be read-only.
+
+
+
+
