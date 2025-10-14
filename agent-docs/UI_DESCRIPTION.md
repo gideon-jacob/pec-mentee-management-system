@@ -318,13 +318,100 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
                                 - `Label` for "Prizes/Awards/Recognitions": Paired with a `Textarea`.
                     - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
             - **`Tab 2: Semester Details`**: Contains all per-semester information.
-                - `Select` dropdown at the top to choose the Academic Year and Semester.
+                - **Semester Selector:** Two interdependent `Select` dropdowns will be displayed side-by-side at the top of the tab, both starting with a default unselected state (e.g., "Select Year", "Select Semester").
+                    - **Academic Year Selector:** The first dropdown allows the user to select the academic year. Selecting a year (e.g., "Year 2") will filter the options in the Semester Selector to show only relevant semesters (e.g., "Semester 3", "Semester 4").
+                    - **Semester Selector:** The second dropdown allows the user to select the semester. If a semester is chosen directly (e.g., "Semester 5"), the Academic Year selector will automatically update to the corresponding year (e.g., "Year 3").
+                    - Changing the selection in either dropdown will refresh the data in the accordion below.
+                - **Data Interaction Model:**
+                    - **Student Role:** Can initially fill out and edit "Mentoring Activity" and "Mentoring Chart". Once the mentor saves/finalizes these sections, they become read-only for the student for that semester.
+                    - **Mentor Role:** Can view student input and has full edit access to all sections.
                 - `Accordion` component to organize the semester data:
-                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**: A form, partially filled by the student, with `Textarea` and `RadioGroup` components for questions regarding academic interests, study habits, and personal well-being. The mentor can review, edit, and finalize the student's input.
-                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**: A detailed form, partially filled by the student, for logging time management using `Input` fields for hours spent. It includes a section for faculty input where ratings (1-5) on classroom and lab performance are entered via `Select` components in a `Table`.
-                    - **`AccordionItem 3: Academic Performance (Page 7)`**: A `Table` listing subjects for the semester with columns for subject code, name, and marks from various assessments (e.g., IAT 1, Model Exam). This table will implement the responsive behavior described in section 4.1.1. A `Button` ("Add Subject") opens a `Dialog` to enter these details. Below the table, `Input` fields capture attendance details and a `Textarea` is available for remarks.
-                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**: A `Table` listing all logged sessions. This table will implement the responsive behavior described in section 4.1.1. A `Button` ("Log New Session") opens a `Dialog` with a form containing a `DatePicker` for the session date and `Input` fields for the 10-point ratings and remarks.
-                    - **`AccordionItem 5: Semester Review (Page 8)`**: A form with `Textarea` fields for the mentor's final review, including Overall Remarks, Disciplinary Issues, and a `Checkbox` to indicate if follow-up is required. An Analysis Sheet section captures Strength and Weakness in `Textarea` fields and improvements in a `Table` with `Select` dropdowns.
+                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**
+                        - **Card-based Form:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Semester Mentoring Activity" and an "Edit" `Button` for the mentor.
+                            - `CardContent`: A form with the following fields:
+                                - `Label` for "What is your Field of Interest?": Paired with a `Textarea`.
+                                - `Label` for "What is your Favourite Subject and it’s reason?": Paired with a `Textarea`.
+                                - `Label` for "Who is your Favourite Teacher and it’s reason?": Paired with a `Textarea`.
+                                - `Label` for "What is your Easiest Subject and it’s reason?": Paired with a `Textarea`.
+                                - `Label` for "What is your Hardest Subject and it’s reason?": Paired with a `Textarea`.
+                                - **Subject Understanding Section:** A dynamically generated list of subjects for the current semester, with the overall question "Do you understand the subjects easily? If not, describe your problems subject-wise."
+                                    - For each subject, the following components will be displayed:
+                                        - A `Label` showing the subject's name.
+                                        - A `RadioGroup` with options "Yes" / "No".
+                                        - A conditional `Textarea` that appears only if "No" is selected, prompting for a description of the problems.
+                                - `Label` for "Do you require any special class/coaching?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - `Label` for "Do you require any special attention from the college? (both academic or otherwise)": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - `Label` for "Do you have any distraction at home or outside? $$
+                                in both academic/personal life
+                                $$": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - **Conditional Arrear Question:** This question will only be visible if the student's record from the previous semester shows one or more arrear subjects.
+                                    - `Label` for "Are you not able to clear any arrear subject after a number of attempts?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected, prompting for details.
+                                - `Label` for "Library Visit Frequency": `Select` with options like "Once a week", "Occasionally", "Never".
+                                - `Label` for "What are subject related books borrowed from our library?": Below the label is a `RadioGroup`.
+                                    - Radio option 1: "List books below". Selecting this reveals a `Textarea`.
+                                    - Radio option 2: "I didn't borrow any subject-related books".
+                                - `Label` for "What are the other titles you have borrowed from our library?": Below the label is a `RadioGroup`.
+                                    - Radio option 1: "List titles below". Selecting this reveals a `Textarea`.
+                                    - Radio option 2: "I didn't borrow any other titles".
+                                - `Label` for "What are the books you have referred for the subjects in this semester?": Below the label is a `RadioGroup`.
+                                    - Radio option 1: "List books below". Selecting this reveals a `Textarea`.
+                                    - Radio option 2: "I didn't refer to any books".
+                                - `Label` for "Do you visit other library?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected for details.
+                                - `Label` for "Do you read dailies?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected for a list.
+                                - `Label` for "How do you update yourself?": Paired with a `Textarea`.
+                                - `Label` for "Efforts to improve communication skills": `Textarea`.
+                                - `Label` for "Have you improved over a period of time?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected, with placeholder "Tell us how?".
+                            - `CardFooter` (Visible only in Edit Mode for Mentor): Contains "Cancel" and "Save" buttons.
+                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**
+                        - **Card-based Form:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Mentoring Chart" and an "Edit" `Button` for the mentor.
+                            - `CardContent`: A form divided by subtitles.
+                                - `CardDescription` subtitle: "Time Management (Student Input)"
+                                    - A `Table` with rows for "Reading for Subject", "Light reading", "Browsing", etc., and an `Input` (type="number") for "Time spent in hours".
+                                - `CardDescription` subtitle: "Class Routine (Faculty Input)"
+                                    - A `Table` where rows are performance metrics (Attendance, Attentiveness, etc.) and columns are subjects for the semester (S1, S2, etc.). Each cell will contain a `Select` (1-5) for the mentor to input ratings.
+                                - `CardDescription` subtitle: "Examinations (Faculty Input)"
+                                    - A `Table` for Monthly Tests and University Exams with metrics like "Seriousness", "Preparations", etc. Each cell will contain a `Select` (1-5) for ratings.
+                                - `CardDescription` subtitle: "Other Activities (Student Input)"
+                                    - `Textarea` fields for "Mini Projects", "Presentations", "Workshops", etc.
+                            - `CardFooter` (Visible only in Edit Mode for Mentor): Contains "Cancel" and "Save" buttons.
+                    - **`AccordionItem 3: Academic Performance (Page 7)`**
+                        - **Card-based View:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Academic Performance & Attendance".
+                            - `CardContent`:
+                                - `Button` ("Manage Subjects & Marks"): Opens a dialog for the mentor to manage academic records.
+                                - `Table` (Read-only on this view): Displays subjects, various assessment marks, credits, and grades.
+                                - A two-column grid below the table displaying GPA, CGPA, Attendance Percentage, Number of Arrears, and mentor remarks for different assessments.
+                            - **Manage Subjects Dialog:**
+                                - A `Table` where each row represents a subject. `Input` fields for Subject Code, Name, and marks. `Select` for Credits and Grade. A "Delete" button for each row.
+                                - `Button` ("Add New Subject") to append a new row to the table.
+                                - `DialogFooter` with "Cancel" and "Save" buttons.
+                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**
+                        - **Card-based Log:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Mentoring Session Log".
+                            - `CardContent`:
+                                - `Button` ("Log New Session"): Opens a dialog for the mentor.
+                                - `Table`: Lists all logged sessions with columns for Date, Ratings (As a person, Character, etc.), Total, and Actions (`Edit`/`Delete`).
+                            - **Log/Edit Session Dialog:**
+                                - `DatePicker` for the session date.
+                                - A series of `Slider` or `Select` components (1-10) for each rating category.
+                                - A read-only field for the "Total" score.
+                                - `Textarea` for "Mentor Remarks".
+                                - `DialogFooter` with "Cancel" and "Save" buttons.
+                    - **`AccordionItem 5: Semester Review (Page 8)`**
+                        - **Card-based Form:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Overall Semester Review" and an "Edit" `Button`.
+                            - `CardContent`:
+                                - `Label` for "Overall Remarks by Mentor": Paired with a `Textarea`.
+                                - `Label` for "Disciplinary Issues, if any": Paired with a `Textarea`.
+                                - `Label` for "Specific Observations (Follow-up needed?)": Paired with a `Textarea`.
+                                - `Checkbox` for "Follow-up by HOD/Principal Required".
+                                - `CardDescription` subtitle: "Analysis Sheet"
+                                    - `Label` for "Strengths this Semester": Paired with a `Textarea`.
+                                    - `Label` for "Weaknesses this Semester": Paired with a `Textarea`.
+                                    - `Label` for "Observed Improvements": A `Table` with rows for "Attendance", "Discipline", "Studies" and a `Select` in each row with options "Improved", "No Change", "Declined".
+                            - `CardFooter` (Visible only in Edit Mode): Contains "Cancel" and "Save" buttons.
             - **`Tab 3: Program Summary`**: A view consolidating all semester data, project details, and placement information.
                 - **Semester Data:** A `Table` auto-populated with semester-wise CGPA, Attendance %, etc.
                 - **Projects & Placements:** Two separate `Table` components to display Mini/Final Projects and Placement Details. Each table will have an "Add" `Button` that opens a `Dialog` for data entry.
