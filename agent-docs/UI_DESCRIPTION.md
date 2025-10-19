@@ -160,142 +160,258 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
     - **Components:**
         - `Header` element at the top of the main content area (distinct from the main layout header): Displays the Student's Name, Register Number, Current Academic Year and Section on the left. Student’s Profile picture on the right.
         - `Tabs` component to switch between views:
-            - **`Tab 1: General Profile`**: A read-only view of the student's onboarding and general profile data (Pages 1-4), with an "Edit" button for fields the mentor can update. This section contains multiple sub-sections organized in `Card` components:
-                - **Personal & Contact Details:**
-                    - **Read-only View:** Data will be displayed in a a two-column grid. Each item will consist of a `Label` (e.g., "Date of Birth:") and its corresponding value as plain text.
-                    - **Edit View:** `DatePicker` for Date of Birth, `Select` for Sex and Community, various `Input` fields for Nationality, Religion, Caste, Contact Numbers, Email, and Blood Group.
-                - **Family Details:**
-                    - **Read-only View:**
-                        - Displays Student, Father, and Mother photos using `Image` or `Avatar` components.
-                        - Parent's details (Names, Education, Occupation, Contact Numbers) will be displayed in a two-column grid with `Labels` and plain text values.
-                        - Sibling details will be shown in a `Table` with columns for Name, Age, Sex, and Profession (the "Actions" column will be hidden).
-                        - Local Guardian details (if applicable) will be displayed as labeled text.
-                    - **Edit View:**
-                        - `FileUpload` for Student, Father, and Mother photos. `Input` fields for Parent's Names, Education, Occupation and Contact Numbers.
-                        - `Button` ("Add Sibling"): Positioned above the siblings table, this opens the dialog to add a new sibling.
-                        - `Table` to display sibling details with columns for Name, Age, Sex, Profession, and Actions.
-                            - `DropdownMenu` in the Actions column for each sibling with options to "Edit" or "Delete".
-                        - **Add/Edit Sibling Dialog:**
-                            - **Trigger:** The "Add Sibling" button or the "Edit" option in a sibling's `DropdownMenu`.
-                            - `DialogContent`: Contains a form for sibling details.
-                            - `DialogHeader`: `DialogTitle` of "Add Sibling Details" or "Edit Sibling Details".
-                            - **Form Fields:** `Input` for Name, `Input` type="number" for Age, `Select` for Sex, and `Input` for Education/Profession.
-                            - `DialogFooter`: `Button` for "Cancel" and `Button` for "Save".
-                        - **Delete Sibling Dialog:** A confirmation `AlertDialog` triggered by the "Delete" option.
-                        - **Local Guardian Details (if applicable):** A dedicated section with `Input` fields for Guardian Name, a `Textarea` for Address, and `Input` fields for Contact Numbers.
-                - **Address & Academic History:**
-                    - **Read-only View:**
-                        - **Addresses:** Both "Address for Communication" and "Permanent Address" will be displayed as labeled text. The "Present Address History" will be shown in a read-only `Table` with columns for "Academic Year", "Effective From", "Address", "Living Arrangement", and "Actions". The actions column will contain a "View Mates" button if applicable.
-                        - **Academic History:** All details for 10th, 12th, and Diploma will be displayed in a two-column grid format, with each item consisting of a `Label` and its corresponding plain text value.
-                    - **Edit View:**
-                        - `Card` for "Addresses":
-                            - `Textarea` for "Address for Communication (Parents)".
-                            - `Textarea` for "Permanent Address (Student)".
-                            - `Button` ("Add New Present Address"): Opens a dialog to log a new address for the student.
-                            - `Table` for "Present Address History": Displays a chronological log of the student's addresses.
-                                - **Columns:** "Academic Year", "Effective From", "Address", "Living Arrangement", and "Actions".
-                                - **Actions Column Logic:** The `DropdownMenu` in this column will have an "Edit" option, which is **only enabled for the most recent address entry**. This is intended for minor corrections. For all historical entries, this option will be disabled.
-                            - **Add/Edit Present Address Dialog:**
-                                - **Trigger:** The "Add New Present Address" button (opens a blank form) or the "Edit" option on the latest address entry (opens a pre-populated form).
-                                - `DialogContent`: Contains a form for the academic year's living details.
-                                - `DialogHeader`: `DialogTitle` will be "Add New Address" or "Edit Current Address".
-                                - **Form Fields:**
-                                    - `DatePicker` for "Effective From": Defaults to the current date when adding a new address. This field is editable.
-                                    - `RadioGroup` for "Living Arrangement" with options: "Hosteller", "Day Scholar (with Parents/Guardian)", "Day Scholar (Staying on own)".
-                                    - `Textarea` for "Address for the Year". This will be disabled and pre-filled with "College Hostel" if "Hosteller" is selected.
-                                    - **If "Day Scholar (Staying on own)" is selected:** A new section appears for "Fellow Mate Details".
-                                        - `Button` ("Add Fellow Mate"): Opens a nested dialog to add a mate.
-                                        - `Table` to list fellow mates with columns for Name, Age, Gender, Phone No., and Actions (`Edit`/`Delete`).
-                                        - **Add/Edit Fellow Mate Dialog:** A form with `Input` for Name, Age, Phone No, and a `Select` for Gender.
-                                - `DialogFooter`:
-                                    - `Button` with "Cancel" text: Closes the dialog without saving.
-                                    - `Button` with "Save Changes" text: Submits the form to save the address details.
-                        - `Card` for "10th Standard Details":
-                            - `Input` field for "School Name".
-                            - `Select` component for "Board". The `SelectContent` will include common options (e.g., "State Board", "CBSE", "ICSE") and an "Other..." option. If "Other..." is selected, an additional `Input` field will appear to allow for custom text entry.
-                            - `Input` field for "Medium of Instruction".
-                            - `Input` field for "Marks Awarded" (type="number").
-                            - `Input` field for "Total Marks" (type="number").
-                        - `Card` for "12th Standard / Diploma Details":
-                            - `RadioGroup` to select between "12th Standard" or "Diploma (Lateral Entry)".
-                                - **Data Submission:** This selection will control a boolean field named `isLateral`. Selecting "Diploma (Lateral Entry)" will set `isLateral` to `true`, while selecting "12th Standard" will set it to `false`.
-                            - **If "12th Standard" is selected:**
+            - **`Tab 1: General Profile`**: This section contains multiple sub-sections organized in individual `Card` components. Each card will manage its own state, allowing a mentor to edit and save one section at a time.
+                - **Personal & Contact Details Card:**
+                    - `CardHeader`: Contains the `CardTitle` "Personal & Contact Details" and a `Button` ("Edit").
+                    - `CardContent`:
+                        - **Default (Read-only) View:** Data will be displayed in a a two-column grid. Each item will consist of a `Label` (e.g., "Date of Birth:") and its corresponding value as plain text.
+                        - **Edit Mode View:** When the "Edit" button is clicked, the content switches to a form with a `DatePicker` for Date of Birth, `Select` for Sex and Community, and various `Input` fields for Nationality, Religion, Caste, Contact Numbers, Email, and Blood Group.
+                    - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                - **Family Details Card:**
+                    - `CardHeader`: Contains the `CardTitle` "Family Details" and a `Button` ("Edit").
+                    - `CardContent`:
+                        - **Default (Read-only) View:**
+                            - Displays Student, Father, and Mother photos using `Image` or `Avatar` components.
+                            - Parent's details (Names, Education, Occupation, Contact Numbers) will be displayed in a two-column grid with `Labels` and plain text values.
+                            - Sibling details will be shown in a `Table` with columns for Name, Age, Sex, and Profession (the "Actions" column will be hidden).
+                            - Local Guardian details (if applicable) will be displayed as labeled text.
+                        - **Edit View:** When the "Edit" button is clicked, the content switches to a form.
+                            - `FileUpload` for Student, Father, and Mother photos. `Input` fields for Parent's Names, Education, Occupation and Contact Numbers.
+                            - `Button` ("Add Sibling"): Positioned above the siblings table, this opens the dialog to add a new sibling.
+                            - `Table` to display sibling details with columns for Name, Age, Sex, Profession, and Actions.
+                                - `DropdownMenu` in the Actions column for each sibling with options to "Edit" or "Delete".
+                            - **Add/Edit Sibling Dialog:**
+                                - **Trigger:** The "Add Sibling" button or the "Edit" option in a sibling's `DropdownMenu`.
+                                - `DialogContent`: Contains a form for sibling details.
+                                - `DialogHeader`: `DialogTitle` of "Add Sibling Details" or "Edit Sibling Details".
+                                - **Form Fields:** `Input` for Name, `Input` type="number" for Age, `Select` for Sex, and `Input` for Education/Profession.
+                                - `DialogFooter`: `Button` for "Cancel" and `Button` for "Save".
+                            - **Delete Sibling Dialog:** A confirmation `AlertDialog` triggered by the "Delete" option.
+                            - **Local Guardian Details (if applicable):** A dedicated section with `Input` fields for Guardian Name, a `Textarea` for Address, and `Input` fields for Contact Numbers.
+                    - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                - **Address & Academic History Section:** This section is composed of several independent cards, each managing a specific part of the student's history.
+                    - **Addresses Card:**
+                        - `CardHeader`: Contains the `CardTitle` "Addresses" and a `Button` ("Edit").
+                        - `CardContent`:
+                            - **Default (Read-only) View:** Displays "Address for Communication" and "Permanent Address" as labeled text. The "Present Address History" will be shown in a read-only `Table` with columns for "Academic Year", "Effective From", "Address", "Living Arrangement", and "Actions". The actions column will contain a "View Mates" button if applicable.
+                            - **Edit Mode View:**
+                                - `Card` for "Addresses":
+                                    - `Textarea` for "Address for Communication (Parents)".
+                                    - `Textarea` for "Permanent Address (Student)".
+                                    - `Button` ("Add New Present Address"): Opens a dialog to log a new address for the student.
+                                    - `Table` for "Present Address History": Displays a chronological log of the student's addresses.
+                                        - **Columns:** "Academic Year", "Effective From", "Address", "Living Arrangement", and "Actions".
+                                        - **Actions Column Logic:** The `DropdownMenu` in this column will have an "Edit" option, which is **only enabled for the most recent address entry**. This is intended for minor corrections. For all historical entries, this option will be disabled.
+                                    - **Add/Edit Present Address Dialog:**
+                                        - **Trigger:** The "Add New Present Address" button (opens a blank form) or the "Edit" option on the latest address entry (opens a pre-populated form).
+                                        - `DialogContent`: Contains a form for the academic year's living details.
+                                        - `DialogHeader`: `DialogTitle` will be "Add New Address" or "Edit Current Address".
+                                        - **Form Fields:**
+                                            - `DatePicker` for "Effective From": Defaults to the current date when adding a new address. This field is editable.
+                                            - `RadioGroup` for "Living Arrangement" with options: "Hosteller", "Day Scholar (with Parents/Guardian)", "Day Scholar (Staying on own)".
+                                            - `Textarea` for "Address for the Year". This will be disabled and pre-filled with "College Hostel" if "Hosteller" is selected.
+                                            - **If "Day Scholar (Staying on own)" is selected:** A new section appears for "Fellow Mate Details".
+                                            - `Button` ("Add Fellow Mate"): Opens a nested dialog to add a mate.
+                                            - `Table` to list fellow mates with columns for Name, Age, Gender, Phone No., and Actions (`Edit`/`Delete`).
+                                            - **Add/Edit Fellow Mate Dialog:** A form with `Input` for Name, Age, Phone No, and a `Select` for Gender.
+                                        - `DialogFooter`:
+                                            - `Button` with "Cancel" text: Closes the dialog without saving.
+                                            - `Button` with "Save Changes" text: Submits the form to save the address details.
+                        - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                    - **10th Standard Details Card:**
+                        - `CardHeader`: Contains the `CardTitle` "10th Standard Details" and a `Button` ("Edit").
+                        - `CardContent`:
+                            - **Default (Read-only) View:** Displays details in a two-column grid with `Labels`.
+                            - **Edit Mode View:** Switches to a form with
                                 - `Input` field for "School Name".
                                 - `Select` component for "Board". The `SelectContent` will include common options (e.g., "State Board", "CBSE", "ICSE") and an "Other..." option. If "Other..." is selected, an additional `Input` field will appear to allow for custom text entry.
                                 - `Input` field for "Medium of Instruction".
                                 - `Input` field for "Marks Awarded" (type="number").
                                 - `Input` field for "Total Marks" (type="number").
-                                - `Grid` of `Input` fields for subject marks (in percentage): Mathematics, Physics, Chemistry. A fourth entry will consist of a `Select` component to choose between "Biology" and "Computer Science", followed by an `Input` field for that subject's marks. Each `Input` should be of `type="number"` and accept values from 0 to 100.
-                                - A read-only `Input` field to display the calculated "Cut-off Mark".
-                            - **If "Diploma (Lateral Entry)" is selected:**
-                                - `Input` field for "Institution Name".
-                                - `Input` field for "Branch".
-                                - `RadioGroup` for "Grading System" with options "Marks" and "CGPA".
-                                - **If "Marks" is selected:**
-                                    - A `Grid` containing two `Input` fields:
+                        - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                    - **12th Standard / Diploma Details Card:**
+                        - `CardHeader`: Contains the `CardTitle` "12th Standard / Diploma Details" and a `Button` ("Edit").
+                        - `CardContent`:
+                            - **Default (Read-only) View:** Displays details in a two-column grid with `Labels`.
+                            - **Edit Mode View:** Switches to a form with
+                                - `RadioGroup` to select between "12th Standard" or "Diploma (Lateral Entry)".
+                                    - **Data Submission:** This selection will control a boolean field named `isLateral`. Selecting "Diploma (Lateral Entry)" will set `isLateral` to `true`, while selecting "12th Standard" will set it to `false`.
+                                - **If "12th Standard" is selected:**
+                                    - `Input` field for "School Name".
+                                    - `Select` component for "Board". The `SelectContent` will include common options (e.g., "State Board", "CBSE", "ICSE") and an "Other..." option. If "Other..." is selected, an additional `Input` field will appear to allow for custom text entry.
+                                    - `Input` field for "Medium of Instruction".
+                                    - `Input` field for "Marks Awarded" (type="number").
+                                    - `Input` field for "Total Marks" (type="number").
+                                    - `Grid` of `Input` fields for subject marks (in percentage): Mathematics, Physics, Chemistry. A fourth entry will consist of a `Select` component to choose between "Biology" and "Computer Science", followed by an `Input` field for that subject's marks. Each `Input` should be of `type="number"` and accept values from 0 to 100.
+                                    - A read-only `Input` field to display the calculated "Cut-off Mark".
+                                - **If "Diploma (Lateral Entry)" is selected:**
+                                    - `Input` field for "Institution Name".
+                                    - `Input` field for "Branch".
+                                    - `RadioGroup` for "Grading System" with options "Marks" and "CGPA".
+                                    - **If "Marks" is selected:**
+                                        - A `Grid` containing two `Input` fields:
                                         - `Input` for "Marks Awarded" (`type="number"`).
                                         - `Input` for "Total Marks" (`type="number"`).
-                                - **If "CGPA" is selected:**
-                                    - A `Grid` containing:
+                                    - **If "CGPA" is selected:**
+                                        - A `Grid` containing:
                                         - `Input` for "CGPA Awarded" (`type="number"`, allows decimals).
                                         - `Select` component for "Maximum CGPA" with options "10" and "5".
-                - **Miscellaneous Details:**
-                    - **Read-only View:** All details in this section will be displayed in a two-column grid format, with each item consisting of a `Label` and its corresponding plain text value. For "Other Languages Known", the selected languages will be displayed as a list of `Badge` components or a comma-separated string.
-                    - **Edit View:**
-                        - `Input` field for "Mother Tongue".
-                        - `Combobox` for "Other Languages Known". This will be a multi-select component. Selected languages will be displayed as dismissible `Badge` components. The component will feature a dropdown with a list of common languages and a search input. Users can type to filter the list or enter a custom language. If the typed language is not in the list, an option to "Add [custom language]" will appear, allowing for dynamic additions.
-                        - `RadioGroup` for "Mode of Admission" with options like "Counseling" and "Management".
-                        - `RadioGroup` for "Dietary Preference" with options "VEG" and "NON-VEG".
-                        - `RadioGroup` for "Vision Problem" with options "Yes" and "No".
-                        - `Textarea` for "Chronic Illness (if any)".
-                - **Socio-Economic Details:**
-                    - **Read-only View:** All details in this section will be displayed in a two-column grid format, with each item consisting of a `Label` and its corresponding plain text value.
-                    - **Edit View:**
-                        - `Input` field for "Father's Annual Income".
-                        - `Input` field for "Mother's Annual Income".
-                        - `Textarea` for "Other Sources of Income (if any)".
-                        - `RadioGroup` for "Undertakes Part-Time Job?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
-                        - `RadioGroup` for "Receives Scholarship?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
-                        - `RadioGroup` for "Receives Other Financial Assistance?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
-                - **Ambition, Career & Self-Analysis:**
-                    - **Read-only View:** All details in this section will be displayed in a two-column grid format, with each item consisting of a `Label` and its corresponding plain text value.
-                    - **Edit View:**
-                        - `Card` titled "Ambition, Career & Self-Analysis" containing the following fields:
-                        - **Personal Ambition:**
-                            - `Label` for "Long Term Aim/Goal": Paired with a `Textarea`.
-                            - `Label` for "Plans to Achieve Goal": Paired with a `Textarea`.
-                        - **Career Plan:**
-                            - `Label` for "Career Options": Paired with a group of `Checkbox` components with the labels "Higher Studies", "Job", and "Entrepreneur". This allows for multiple selections.
-                            - `Label` for "Preparation for Career": Paired with a `Textarea`.
-                            - `Label` for "Do you take extra coaching?": Paired with a `RadioGroup` ("Yes"/"No"). If "Yes", a `Textarea` for details is revealed.
-                            - `Label` for "Help required from College/Dept": Paired with a `Textarea`.
-                        - **Self-Analysis (SWOT):**
-                            - `Label` for "Academic Strengths": Paired with a `Textarea`.
-                            - `Label` for "General Strengths": Paired with a `Textarea`.
-                            - `Label` for "Academic Weaknesses": Paired with a `Textarea`.
-                            - `Label` for "General Weaknesses": Paired with a `Textarea`.
-                        - **Living Style:**
-                            - `Label` for "How often do you communicate with your parents?": Paired with a `Select` with options "Daily", "Weekly", "Occasionally".
-                            - `Label` for "How often do your parents communicate with you?": Paired with a `Select` with options "Daily", "Weekly", "Occasionally".
-                            - **(Conditional Field)** If the student's latest "Living Arrangement" (from Address History) is "Hosteller", the following fields will appear:
-                                - `Label` for "Describe your roommates": Paired with a `Textarea`.
-                                - `Label` for "Describe the hostel environment/situation": Paired with a `Textarea`.
-                            - `Label` for "How do you spend your free time on weekend/holidays?": Paired with a `Textarea`.
-                        - **General Academic & Co-curricular:**
-                            - `Label` for "Do you like this branch?": Paired with a `RadioGroup` ("Yes"/"No"). If "No", a `Textarea` is revealed for the reason.
-                            - `Label` for "Fundamental Mathematics Strength": Paired with a `RadioGroup` presented as a row of 5 styled radio buttons. The options will represent a scale from 1 to 5, labeled "Very Weak", "Weak", "Average", "Strong", and "Very Strong".
-                            - `Label` for "Fundamental Core Engineering Strength": Paired with a `RadioGroup` with the same visual style and options as above.
-                            - `Label` for "Are you capable of raising questions in class?": Paired with a `RadioGroup` ("Yes"/"No").
-                            - `Label` for "Interested in Sports & Games?": Paired with a `RadioGroup` ("Yes"/"No"). If "Yes", a `Textarea` for details is revealed.
-                            - `Label` for "Prizes/Awards/Recognitions": Paired with a `Textarea`.
+                        - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                - **Miscellaneous Details Card:**
+                    - `CardHeader`: Contains the `CardTitle` "Miscellaneous Details" and a `Button` ("Edit").
+                    - `CardContent`:
+                        - **Default (Read-only) View:** All details in this section will be displayed in a two-column grid format, with each item consisting of a `Label` and its corresponding plain text value. For "Other Languages Known", the selected languages will be displayed as a list of `Badge` components or a comma-separated string.
+                        - **Edit Mode View:** Switches to a form with
+                            - `Input` field for "Mother Tongue".
+                            - `Combobox` for "Other Languages Known". This will be a multi-select component. Selected languages will be displayed as dismissible `Badge` components. The component will feature a dropdown with a list of common languages and a search input. Users can type to filter the list or enter a custom language. If the typed language is not in the list, an option to "Add customlanguage
+                                
+                                " will appear, allowing for dynamic additions.
+                                
+                            - `RadioGroup` for "Mode of Admission" with options like "Counseling" and "Management".
+                            - `RadioGroup` for "Dietary Preference" with options "VEG" and "NON-VEG".
+                            - `RadioGroup` for "Vision Problem" with options "Yes" and "No".
+                            - `Textarea` for "Chronic Illness (if any)".
+                    - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                - **Socio-Economic Details Card:**
+                    - `CardHeader`: Contains the `CardTitle` "Socio-Economic Details" and a `Button` ("Edit").
+                    - `CardContent`:
+                        - **Default (Read-only) View:** Displays details in a two-column grid.
+                        - **Edit Mode View:** Switches to a form with
+                            - `Input` field for "Father's Annual Income".
+                            - `Input` field for "Mother's Annual Income".
+                            - `Textarea` for "Other Sources of Income (if any)".
+                            - `RadioGroup` for "Undertakes Part-Time Job?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
+                            - `RadioGroup` for "Receives Scholarship?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
+                            - `RadioGroup` for "Receives Other Financial Assistance?" with options "Yes" and "No". If "Yes" is selected, a `Textarea` for details is revealed.
+                    - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
+                - **Ambition, Career & Self-Analysis Card:**
+                    - `CardHeader`: Contains the `CardTitle` "Ambition, Career & Self-Analysis" and a `Button` ("Edit").
+                    - `CardContent`:
+                        - **Default (Read-only) View:** Displays details in a two-column grid.
+                        - **Edit Mode View:** Switches to a comprehensive form with
+                            - `CardDescription` subtitle: “Personal Ambition”
+                                - `Label` for "Long Term Aim/Goal": Paired with a `Textarea`.
+                                - `Label` for "Plans to Achieve Goal": Paired with a `Textarea`.
+                            - `CardDescription` subtitle: “Career Plan”
+                                - `Label` for "Career Options": Paired with a group of `Checkbox` components with the labels "Higher Studies", "Job", and "Entrepreneur". This allows for multiple selections.
+                                - `Label` for "Preparation for Career": Paired with a `Textarea`.
+                                - `Label` for "Do you take extra coaching?": Paired with a `RadioGroup` ("Yes"/"No"). If "Yes", a `Textarea` for details is revealed.
+                                - `Label` for "Help required from College/Dept": Paired with a `Textarea`.
+                            - `CardDescription` subtitle: “Self-Analysis (SWOT)”
+                                - `Label` for "Academic Strengths": Paired with a `Textarea`.
+                                - `Label` for "General Strengths": Paired with a `Textarea`.
+                                - `Label` for "Academic Weaknesses": Paired with a `Textarea`.
+                                - `Label` for "General Weaknesses": Paired with a `Textarea`.
+                            - `CardDescription` subtitle: “Living Style”
+                                - `Label` for "How often do you communicate with your parents?": Paired with a `Select` with options "Daily", "Weekly", "Occasionally".
+                                - `Label` for "How often do your parents communicate with you?": Paired with a `Select` with options "Daily", "Weekly", "Occasionally".
+                                - **(Conditional Field)** If the student's latest "Living Arrangement" (from Address History) is "Hosteller", the following fields will appear:
+                                    - `Label` for "Describe your roommates": Paired with a `Textarea`.
+                                    - `Label` for "Describe the hostel environment/situation": Paired with a `Textarea`.
+                                - `Label` for "How do you spend your free time on weekend/holidays?": Paired with a `Textarea`.
+                            - `CardDescription` subtitle: “General Academic & Co-curricular”
+                                - `Label` for "Do you like this branch?": Paired with a `RadioGroup` ("Yes"/"No"). If "No", a `Textarea` is revealed for the reason.
+                                - `Label` for "Fundamental Mathematics Strength": Paired with a `RadioGroup` presented as a row of 5 styled radio buttons. The options will represent a scale from 1 to 5, labeled "Very Weak", "Weak", "Average", "Strong", and "Very Strong".
+                                - `Label` for "Fundamental Core Engineering Strength": Paired with a `RadioGroup` with the same visual style and options as above.
+                                - `Label` for "Are you capable of raising questions in class?": Paired with a `RadioGroup` ("Yes"/"No").
+                                - `Label` for "Interested in Sports & Games?": Paired with a `RadioGroup` ("Yes"/"No"). If "Yes", a `Textarea` for details is revealed.
+                                - `Label` for "Prizes/Awards/Recognitions": Paired with a `Textarea`.
+                    - `CardFooter` (Visible only in Edit Mode): Contains a "Cancel" `Button` and a "Save Changes" `Button`.
             - **`Tab 2: Semester Details`**: Contains all per-semester information.
-                - `Select` dropdown at the top to choose the Academic Year and Semester.
+                - **Semester Selector:** Two interdependent `Select` dropdowns will be displayed side-by-side at the top of the tab, both starting with a default unselected state (e.g., "Select Year", "Select Semester").
+                    - **Academic Year Selector:** The first dropdown allows the user to select the academic year. Selecting a year (e.g., "Year 2") will filter the options in the Semester Selector to show only relevant semesters (e.g., "Semester 3", "Semester 4").
+                    - **Semester Selector:** The second dropdown allows the user to select the semester. If a semester is chosen directly (e.g., "Semester 5"), the Academic Year selector will automatically update to the corresponding year (e.g., "Year 3").
+                    - Changing the selection in either dropdown will refresh the data in the accordion below.
+                - **Data Interaction Model:**
+                    - **Student Role:** Can initially fill out and edit "Mentoring Activity" and "Mentoring Chart". Once the mentor saves/finalizes these sections, they become read-only for the student for that semester.
+                    - **Mentor Role:** Can view student input and has full edit access to all sections.
                 - `Accordion` component to organize the semester data:
-                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**: A form, partially filled by the student, with `Textarea` and `RadioGroup` components for questions regarding academic interests, study habits, and personal well-being. The mentor can review, edit, and finalize the student's input.
-                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**: A detailed form, partially filled by the student, for logging time management using `Input` fields for hours spent. It includes a section for faculty input where ratings (1-5) on classroom and lab performance are entered via `Select` components in a `Table`.
-                    - **`AccordionItem 3: Academic Performance (Page 7)`**: A `Table` listing subjects for the semester with columns for subject code, name, and marks from various assessments (e.g., IAT 1, Model Exam). This table will implement the responsive behavior described in section 4.1.1. A `Button` ("Add Subject") opens a `Dialog` to enter these details. Below the table, `Input` fields capture attendance details and a `Textarea` is available for remarks.
-                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**: A `Table` listing all logged sessions. This table will implement the responsive behavior described in section 4.1.1. A `Button` ("Log New Session") opens a `Dialog` with a form containing a `DatePicker` for the session date and `Input` fields for the 10-point ratings and remarks.
-                    - **`AccordionItem 5: Semester Review (Page 8)`**: A form with `Textarea` fields for the mentor's final review, including Overall Remarks, Disciplinary Issues, and a `Checkbox` to indicate if follow-up is required. An Analysis Sheet section captures Strength and Weakness in `Textarea` fields and improvements in a `Table` with `Select` dropdowns.
+                    - **`AccordionItem 1: Mentoring Activity (Page 5)`**
+                        - **Card-based Form:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Semester Mentoring Activity" and an "Edit" `Button` for the mentor.
+                            - `CardContent`: A form with the following fields:
+                                - `Label` for "What is your Field of Interest?": Paired with a `Textarea`.
+                                - `Label` for "What is your Favourite Subject and it’s reason?": Paired with a `Textarea`.
+                                - `Label` for "Who is your Favourite Teacher and it’s reason?": Paired with a `Textarea`.
+                                - `Label` for "What is your Easiest Subject and it’s reason?": Paired with a `Textarea`.
+                                - `Label` for "What is your Hardest Subject and it’s reason?": Paired with a `Textarea`.
+                                - **Subject Understanding Section:** A dynamically generated list of subjects for the current semester, with the overall question "Do you understand the subjects easily? If not, describe your problems subject-wise."
+                                    - For each subject, the following components will be displayed:
+                                        - A `Label` showing the subject's name.
+                                        - A `RadioGroup` with options "Yes" / "No".
+                                        - A conditional `Textarea` that appears only if "No" is selected, prompting for a description of the problems.
+                                - `Label` for "Do you require any special class/coaching?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - `Label` for "Do you require any special attention from the college? (both academic or otherwise)": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - `Label` for "Do you have any distraction at home or outside? $$
+                                in both academic/personal life
+                                $$": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - **Conditional Arrear Question:** This question will only be visible if the student's record from the previous semester shows one or more arrear subjects.
+                                    - `Label` for "Are you not able to clear any arrear subject after a number of attempts?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected, prompting for details.
+                                - `Label` for "Library Visit Frequency": `Select` with options like "Once a week", "Occasionally", "Never".
+                                - `Label` for "What are subject related books borrowed from our library?": Below the label is a `RadioGroup`.
+                                    - Radio option 1: "List books below". Selecting this reveals a `Textarea`.
+                                    - Radio option 2: "I didn't borrow any subject-related books".
+                                - `Label` for "What are the other titles you have borrowed from our library?": Below the label is a `RadioGroup`.
+                                    - Radio option 1: "List titles below". Selecting this reveals a `Textarea`.
+                                    - Radio option 2: "I didn't borrow any other titles".
+                                - `Label` for "What are the books you have referred for the subjects in this semester?": Below the label is a `RadioGroup`.
+                                    - Radio option 1: "List books below". Selecting this reveals a `Textarea`.
+                                    - Radio option 2: "I didn't refer to any books".
+                                - `Label` for "Do you visit other library?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected for details.
+                                - `Label` for "Do you read dailies?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected for a list.
+                                - `Label` for "How do you update yourself?": Paired with a `Textarea`.
+                                - `Label` for "Efforts to improve communication skills": `Textarea`.
+                                - `Label` for "Have you improved over a period of time?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected, with placeholder "Tell us how?".
+                            - `CardFooter` (Visible only in Edit Mode for Mentor): Contains "Cancel" and "Save" buttons.
+                    - **`AccordionItem 2: Mentoring Chart (Page 6)`**
+                        - **Card-based Form:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Mentoring Chart" and an "Edit" `Button` for the mentor.
+                            - `CardContent`: A form divided by subtitles.
+                                - `CardDescription` subtitle: "Time Management (Student Input)"
+                                    - A `Table` with rows for "Reading for Subject", "Light reading", "Browsing", etc., and an `Input` (type="number") for "Time spent in hours".
+                                - `CardDescription` subtitle: "Class Routine (Faculty Input)"
+                                    - A `Table` where rows are performance metrics (Attendance, Attentiveness, etc.) and columns are subjects for the semester (S1, S2, etc.). Each cell will contain a `Select` (1-5) for the mentor to input ratings.
+                                - `CardDescription` subtitle: "Examinations (Faculty Input)"
+                                    - A `Table` for Monthly Tests and University Exams with metrics like "Seriousness", "Preparations", etc. Each cell will contain a `Select` (1-5) for ratings.
+                                - `CardDescription` subtitle: "Other Activities (Student Input)"
+                                    - `Textarea` fields for "Mini Projects", "Presentations", "Workshops", etc.
+                            - `CardFooter` (Visible only in Edit Mode for Mentor): Contains "Cancel" and "Save" buttons.
+                    - **`AccordionItem 3: Academic Performance (Page 7)`**
+                        - **Card-based View:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Academic Performance & Attendance".
+                            - `CardContent`:
+                                - `Button` ("Manage Subjects & Marks"): Opens a dialog for the mentor to manage academic records.
+                                - `Table` (Read-only on this view): Displays subjects, various assessment marks, credits, and grades.
+                                - A two-column grid below the table displaying GPA, CGPA, Attendance Percentage, Number of Arrears, and mentor remarks for different assessments.
+                            - **Manage Subjects Dialog:**
+                                - A `Table` where each row represents a subject. `Input` fields for Subject Code, Name, and marks. `Select` for Credits and Grade. A "Delete" button for each row.
+                                - `Button` ("Add New Subject") to append a new row to the table.
+                                - `DialogFooter` with "Cancel" and "Save" buttons.
+                    - **`AccordionItem 4: Mentoring Sessions (Page 7)`**
+                        - **Card-based Log:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Mentoring Session Log".
+                            - `CardContent`:
+                                - `Button` ("Log New Session"): Opens a dialog for the mentor.
+                                - `Table`: Lists all logged sessions with columns for Date, Ratings (As a person, Character, etc.), Total, and Actions (`Edit`/`Delete`).
+                            - **Log/Edit Session Dialog:**
+                                - `DatePicker` for the session date.
+                                - A series of `Slider` or `Select` components (1-10) for each rating category.
+                                - A read-only field for the "Total" score.
+                                - `Textarea` for "Mentor Remarks".
+                                - `DialogFooter` with "Cancel" and "Save" buttons.
+                    - **`AccordionItem 5: Semester Review (Page 8)`**
+                        - **Card-based Form:** This item will be a `Card`.
+                            - `CardHeader`: `CardTitle` of "Overall Semester Review" and an "Edit" `Button`.
+                            - `CardContent`:
+                                - `Label` for "Overall Remarks by Mentor": Paired with a `Textarea`.
+                                - `Label` for "Disciplinary Issues, if any": Paired with a `Textarea`.
+                                - `Label` for "Specific Observations (Follow-up needed?)": Paired with a `Textarea`.
+                                - `Checkbox` for "Follow-up by HOD/Principal Required".
+                                - `CardDescription` subtitle: "Analysis Sheet"
+                                    - `Label` for "Strengths this Semester": Paired with a `Textarea`.
+                                    - `Label` for "Weaknesses this Semester": Paired with a `Textarea`.
+                                    - `Label` for "Observed Improvements": A `Table` with rows for "Attendance", "Discipline", "Studies" and a `Select` in each row with options "Improved", "No Change", "Declined".
+                            - `CardFooter` (Visible only in Edit Mode): Contains "Cancel" and "Save" buttons.
             - **`Tab 3: Program Summary`**: A view consolidating all semester data, project details, and placement information.
                 - **Semester Data:** A `Table` auto-populated with semester-wise CGPA, Attendance %, etc.
                 - **Projects & Placements:** Two separate `Table` components to display Mini/Final Projects and Placement Details. Each table will have an "Add" `Button` that opens a `Dialog` for data entry.
