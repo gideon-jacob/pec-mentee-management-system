@@ -16,12 +16,38 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
                 - `DropdownMenuSeparator`: A horizontal line.
                 - `DropdownMenuItem` ("Logout"): A button that logs the user out and redirects them to the Role Selection Page.
 - **6.0.2 Sidebar**
-    - **Description:** A navigation sidebar on the left side of the screen. It will be collapsible to save horizontal space. The navigation links displayed will be dynamic based on the logged-in user's role.
+    - **Description:** A navigation sidebar for the application. The navigation links displayed will be dynamic based on the logged-in user's role.
     - **Components:**
         - `NavigationMenu`: A vertical list of links.
         - **Administrator Links:** "Dashboard", "User Management", "Student Management", "Mentor Assignment", "Academic Management".
         - **Mentor Links:** "Dashboard" (shows their mentee list), "My Profile".
         - **Student/Parent Links:** "My Profile", "Faculty Contacts".
+- **6.0.3 Common Layout Responsive Behavior**
+    - **Header:**
+        - **Desktop:** Displays the full application name and logo on the left, with the user avatar and dropdown on the right.
+        - **Tablet:** Similar to desktop. The application name may be truncated on smaller tablet sizes to save space.
+        - **Mobile:** The application name is hidden or shortened. A "hamburger" menu icon appears on the far left to toggle the sidebar. The user avatar remains on the right.
+    - **Sidebar:**
+        - **Desktop:** The sidebar is visible by default in its expanded state. A toggle button allows the user to collapse it into an icon-only view.
+        - **Tablet (Landscape):** Behaves similarly to the desktop view, likely starting in the collapsed (icon-only) state.
+        - **Tablet (Portrait) & Mobile:** The sidebar is hidden by default. It appears as an overlay, sliding in from the left, when triggered by the "hamburger" icon in the header. It includes a close button or can be dismissed by tapping the overlay background.
+- **6.0.3 Common Responsive Patterns**
+    - To ensure a consistent and user-friendly experience, various tables throughout the application will adopt specific responsive behaviors on small screens. These patterns are referenced in the component descriptions below.
+    - **Pattern A: Standard Data Table to Card List**
+        - **Use Case:** Displaying lists of items like users, students, etc.
+        - **Behavior:** On small screens, each table row transforms into a `Card`. Inside the card, data is displayed vertically with `Labels`. This is the default responsive behavior as defined in SRS section 4.1.1.
+            - **Desktop & Tablet:** Renders as a standard `Table` with multiple columns and rows, allowing for easy comparison of data across entries.
+            - **Mobile:** Transforms into a vertical list of `Card` components. Each card represents a single row from the table. Inside the card, the data is displayed as a series of `Label`-value pairs (e.g., "Name: John Doe", "Role: Mentor"). Action buttons are given prominence for easy tapping.
+    - **Pattern B: Two-Column Form Table to Card List**
+        - **Use Case:** Simple input tables where each row has a label and a single input/control (e.g., Weekly Activities, Laboratory ratings).
+        - **Behavior:** On small screens, the table transforms into a list of cards. Each card represents one row, with the label becoming the `CardTitle` or a prominent `Label`, and the input control (e.g., `Input`, `Select`, `RadioGroup`) placed vertically below it.
+            - **Desktop & Tablet:** Renders as a two-column `Table`. The first column contains the descriptive label (e.g., "Academic"), and the second column contains the corresponding `Input`, `Select`, or `RadioGroup` control.
+            - **Mobile:** Transforms into a list of `Card` components. Each card represents a single form row. The label becomes the `CardTitle` or a prominent `Label` inside the card, and the input control is placed vertically below it for a clear, tap-friendly layout.
+    - **Pattern C: Multi-Column Form Table to Card List**
+        - **Use Case:** Complex tables with multiple dynamic columns (e.g., Classroom Activity ratings per subject).
+        - **Behavior:** On small screens, the table transforms into a list of cards, where each card represents one *row metric* (e.g., a card for "Attendance"). Inside that card, a vertical list will display each *column header* (e.g., subject name) paired with its corresponding input control.
+            - **Desktop & Tablet:** Renders as a full multi-column `Table`. The first column contains the row metric (e.g., "Attendance"), and subsequent columns represent dynamic items (e.g., subjects), with an input control in each cell.
+            - **Mobile:** Transforms into a list of `Card` components. Each card represents one *row metric* (e.g., a card for "Attendance"). Inside that card, a vertical list displays each *column header* (e.g., "Subject 1") paired with its corresponding input control, preventing horizontal overflow.
 
 ### 6.1 Common Pages
 
@@ -95,12 +121,8 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
             - **Dialog Component:**
                 - `DialogContent`: The main container for the modal's content, which is a form.
                 - `DialogHeader`:
-                    - `DialogTitle`: "Edit Mentor for $$
-                    Student Name
-                    $$".
-                    - `DialogDescription`: Displays the current assignment status, e.g., "Currently assigned to: $$
-                    Mentor Name
-                    $$" or "This student is currently unassigned."
+                    - `DialogTitle`: "Edit Mentor for $$ Student Name $$".
+                    - `DialogDescription`: Displays the current assignment status, e.g., "Currently assigned to: $$ Mentor Name $$" or "This student is currently unassigned."
                 - **Form Fields:**
                     - `Label` for "New Mentor": Paired with a `Select` component.
                         - `SelectTrigger`: Shows the currently selected new mentor.
@@ -114,9 +136,7 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
                 - `DialogContent`: The main container for the modal's content, which is a form.
                 - `DialogHeader`:
                     - `DialogTitle`: "Bulk Edit Mentor Assignment".
-                    - `DialogDescription`: Displays the number of students selected, e.g., "You are about to change the mentor for $$
-                    X
-                    $$ selected students."
+                    - `DialogDescription`: Displays the number of students selected, e.g., "You are about to change the mentor for $$ X $$ selected students."
                 - **Form Fields:**
                     - `Label` for "New Mentor": Paired with a `Select` component.
                         - `SelectTrigger`: Shows a placeholder. If the selected students all have the same mentor, it will show that mentor's name. If the selected students have different mentors, it will show a placeholder text like "-- Multiple Values --".
@@ -342,9 +362,7 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
                                         - A conditional `Textarea` that appears only if "No" is selected, prompting for a description of the problems.
                                 - `Label` for "Do you require any special class/coaching?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
                                 - `Label` for "Do you require any special attention from the college? (both academic or otherwise)": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
-                                - `Label` for "Do you have any distraction at home or outside? $$
-                                in both academic/personal life
-                                $$": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
+                                - `Label` for "Do you have any distraction at home or outside? [ in both academic/personal life ]": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected.
                                 - **Conditional Arrear Question:** This question will only be visible if the student's record from the previous semester shows one or more arrear subjects.
                                     - `Label` for "Are you not able to clear any arrear subject after a number of attempts?": Paired with a `RadioGroup` ("Yes"/"No"). A conditional `Textarea` appears if "Yes" is selected, prompting for details.
                                 - `Label` for "Library Visit Frequency": `Select` with options like "Once a week", "Occasionally", "Never".
@@ -367,14 +385,29 @@ For all authenticated users (Admin, Mentor, Student, etc.), the application will
                         - **Card-based Form:** This item will be a `Card`.
                             - `CardHeader`: `CardTitle` of "Mentoring Chart" and an "Edit" `Button` for the mentor.
                             - `CardContent`: A form divided by subtitles.
-                                - `CardDescription` subtitle: "Time Management (Student Input)"
-                                    - A `Table` with rows for "Reading for Subject", "Light reading", "Browsing", etc., and an `Input` (type="number") for "Time spent in hours".
-                                - `CardDescription` subtitle: "Class Routine (Faculty Input)"
-                                    - A `Table` where rows are performance metrics (Attendance, Attentiveness, etc.) and columns are subjects for the semester (S1, S2, etc.). Each cell will contain a `Select` (1-5) for the mentor to input ratings.
-                                - `CardDescription` subtitle: "Examinations (Faculty Input)"
-                                    - A `Table` for Monthly Tests and University Exams with metrics like "Seriousness", "Preparations", etc. Each cell will contain a `Select` (1-5) for ratings.
-                                - `CardDescription` subtitle: "Other Activities (Student Input)"
-                                    - `Textarea` fields for "Mini Projects", "Presentations", "Workshops", etc.
+                                - `CardDescription` subtitle: "I. Time Management (Student Input)"
+                                    - **Weekly Activities Table:** A `Table` with rows for "Academic", "Professional - training & development", "Knowledge Up dating", "Recreation", and "Personal attention". Each row will have an `Input` (type="number") for "Time spent in hours".
+                                        - **Responsive Behavior:** This table will follow **Pattern B** (see section 6.0.3).
+                                    - **Daily Activities Table:** A `Table` with rows for "Reading for Subject", "Light reading", "Other preparations", "Browsing", "On social networks", and "Physical/Sports". Each row will have an `Input` (type="number") for "Time spent in hours".
+                                        - **Responsive Behavior:** This table will follow **Pattern B** (see section 6.0.3).
+                                - `CardDescription` subtitle: "II. Class Routine (Faculty Input)"
+                                    - **Classroom Activity Table:** A `Table` where rows are performance metrics ("Attendance", "Attentiveness", "Taking notes", "Interaction", "Task completion"). Columns will dynamically represent the subjects for the current semester (e.g., S1, S2, S3...). Each cell will contain a `Select` with options from 1 to 5 for the mentor to input ratings.
+                                        - **Responsive Behavior:** This table will follow **Pattern C** (see section 6.0.3).
+                                    - **Laboratory Table:** A `Table` where rows are performance metrics ("Performing experiments", "Observation", "Record completion"). Each row will have a `Select` with options from 1 to 5 for the mentor to input ratings.
+                                        - **Responsive Behavior:** This table will follow **Pattern B** (see section 6.0.3).
+                                - `CardDescription` subtitle: "III. Examinations"
+                                    - **Monthly Tests Table (Faculty Input):** A `Table` where rows are metrics ("Attendance", "Seriousness", "Preparations", "Material collection", "Record keeping"). Each row will have a `Select` with options from 1 to 5 for the mentor to input ratings.
+                                        - **Responsive Behavior:** This table will follow **Pattern B** (see section 6.0.3).
+                                    - **University Exams Table (Student Input):** A `Table` where rows are preparation methods ("Previous year questions", "Question bank", "Material collection", "Group Study", "Extra coaching"). Each row will have a `RadioGroup` ("Yes"/"No") for the student to select.
+                                        - **Responsive Behavior:** This table will follow **Pattern B** (see section 6.0.3).
+                                - `CardDescription` subtitle: "V. Other Activities (Student Input)"
+                                    - `Label` for "Mini Projects": Paired with a `Textarea`.
+                                    - `Label` for "Presentations/Conference/Seminar/Workshop": Paired with a `Textarea`.
+                                    - `Label` for "Participations Cultural/Sports": Paired with a `Textarea`.
+                                    - `Label` for "Training programme attended": Paired with a `Textarea`.
+                                    - `Label` for "Any other interested activity": Paired with a `Textarea`.
+                                - `CardDescription` subtitle: "Suggestions by Mentor"
+                                    - A `Textarea` for the mentor to provide overall suggestions based on the chart.
                             - `CardFooter` (Visible only in Edit Mode for Mentor): Contains "Cancel" and "Save" buttons.
                     - **`AccordionItem 3: Academic Performance (Page 7)`**
                         - **Card-based View:** This item will be a `Card`.

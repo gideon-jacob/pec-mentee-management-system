@@ -131,7 +131,7 @@ The application will be a web-based platform accessible through modern web brows
 ### 4.1 User Interfaces
 
 The application will feature a clean, modern, and intuitive graphical user interface (GUI). Key UI elements will include:
-
+- The UI will incorporate the college's branding, using the primary color `#a61612` (from the college logo) for key interactive elements to ensure a consistent and familiar look and feel.
 - A centralized dashboard for each user role providing a quick overview of relevant information (e.g., list of mentees for a mentor, departmental stats for an HOD).
 - User-friendly forms for data entry with clear labels, placeholders, and real-time validation to minimize errors.
 - Interactive and responsive tables for displaying lists of students and academic data, with robust sorting, filtering, and search capabilities.
@@ -180,6 +180,7 @@ As a web-based application, the system will not interface directly with any spec
 - **Learnability:** The user interface should be intuitive and easy to learn for users with basic computer skills, requiring minimal training.
 - **Consistency:** A consistent design language, layout, and navigation should be used throughout the application to avoid user confusion.
 - **Error Handling:** The system shall provide clear, user-friendly error messages and guidance on how to resolve issues.
+- **Theme Support:** The application shall support both light and dark themes, allowing users to switch between them based on their preference.
 
 ### 5.5 Scalability
 
@@ -203,7 +204,7 @@ As a web-based application, the system will not interface directly with any spec
 
 ### 5.8 Installability
 
-- The application must be a PWA and should prompt users to install it on their home screen on supported devices (desktop and mobile) for easy, app-like access.
+- The application must be a PWA and should prompt users to install it on their home screen on supported devices (desktop, tablet, and mobile) for easy, app-like access. This includes providing appropriate icons and splash screen configurations in the PWA manifest for a native application feel across all platforms.
 
 ### 6. UI Description
 
