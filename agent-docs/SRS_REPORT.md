@@ -1,12 +1,12 @@
 # Software Requirements Specification
 
-## Student Mentoring Application
+## PECTOP (PEC Tracking Online Portal)
 
 ### 1. Introduction
 
 ### 1.1 Purpose
 
-The purpose of this document is to provide a detailed description of the requirements for the **Student Mentoring Application**. This application is designed to digitize the existing paper-based student mentoring booklet, creating a centralized and efficient system for tracking and managing student mentorship, academic performance, and personal development throughout their time at the institution.
+The purpose of this document is to provide a detailed description of the requirements for the **PECTOP (PEC Tracking Online Portal)**. This application is designed to digitize the existing paper-based student mentoring booklet, creating a centralized and efficient system for tracking and managing student mentorship, academic performance, and personal development throughout their time at the institution.
 
 ### 1.2 Intended Audience
 
@@ -21,7 +21,7 @@ This document is intended for all stakeholders involved in the development and i
 
 ### 1.3 Overall Description
 
-The Student Mentoring Application will be a web-based platform that allows for the easy entry, storage, and retrieval of student data currently captured in the physical mentoring booklet. It will provide different levels of access for various user roles, ensuring data privacy and integrity. The system aims to improve the efficiency of the mentoring process, provide better insights into student performance through analytics, and enhance communication between mentors, students, and parents.
+The PECTOP will be a web-based platform that allows for the easy entry, storage, and retrieval of student data currently captured in the physical mentoring booklet. It will provide different levels of access for various user roles, ensuring data privacy and integrity. The system aims to improve the efficiency of the mentoring process, provide better insights into student performance through analytics, and enhance communication between mentors, students, and parents.
 
 ### 1.4 Scope
 
@@ -42,7 +42,7 @@ This application will be a standalone system, but it is designed with the potent
 
 ### 2.2 Product Functions
 
-The key functions of the Student Mentoring Application are:
+The key functions of PECTOP are:
 
 - **User Authentication and Authorization:** Secure login for different user roles.
 - **Student Profile Management:** Create, view, and update student profiles. This is divided into a one-time general profile and recurring semester-based profiles.
@@ -348,6 +348,3 @@ CREATE TABLE SemesterReviews (
 -- ...
 
 ```
-
-
-
